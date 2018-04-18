@@ -25,11 +25,12 @@ export class PlotComponent implements OnInit {
       { name: 'sine', data: [{ x: [], y: [] }] },
       { name: 'cosine', data: [{ x: [], y: [] }] },
       { name: 'circle', data: [{ x: [], y: [] }] },
+      { name: 'square', data: [{ x: [], y: [] }] },
     ];
 
     let q = 3;
     var n = 200 * q;
-
+    let sign = 1;
     for (var i = 0; i < n; i++) {
       var t = i / (n - 1) * 2 * q
 
@@ -44,6 +45,12 @@ export class PlotComponent implements OnInit {
       // A circle:
       frames[2].data[0].x[i] = Math.sin(t * Math.PI);
       frames[2].data[0].y[i] = Math.cos(t * Math.PI);
+
+      // A square:
+      
+      if(i%100===0) sign*=(-1);
+      frames[3].data[0].x[i] = t * Math.PI;
+      frames[3].data[0].y[i] = sign;
     }
 
     Plotly.plot(this.plotObject, [{
@@ -58,7 +65,8 @@ export class PlotComponent implements OnInit {
           buttons: [
             { method: 'animate', args: [['sine']], label: 'sine' },
             { method: 'animate', args: [['cosine']], label: 'cosine' },
-            { method: 'animate', args: [['circle']], label: 'circle' }
+            { method: 'animate', args: [['circle']], label: 'circle' },
+            { method: 'animate', args: [['square']], label: 'square' }
           ]
         }]
       }, { displayModeBar: true }).then(() => {
