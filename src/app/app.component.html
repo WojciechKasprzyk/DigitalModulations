@@ -39,12 +39,6 @@
                 </div>
                 <div class="option-set">
                     <div class="set-name">input data:</div>
-                    <div class="slider">
-                        <div class="input-data">{{menuForm.value.inputDataLength}}</div>
-                        <div>
-                            <input type="range" min="1" max="20" value="5" formControlName="inputDataLength">
-                        </div>
-                    </div>
                     <div>
                         <label class='label-radio' for="random">
                             <input type="radio" value="random" id="random" formControlName="inputDataType">
@@ -57,9 +51,40 @@
                             <span>custom</span>
                         </label>
                     </div>
-                    <div *ngIf="menuForm?.value?.inputDataType=='custom'" class="custom-input-data">
-                        <input formControlName="inputData" placeholder="1,0,1,0,1">
+                    <div *ngIf="menuForm?.value?.inputDataType=='random'" class="slider">
+                        <div class="input-data">{{menuForm.value.inputDataLength}}</div>
+                        <div>
+                            <input type="range" min="1" max="20" value="5" formControlName="inputDataLength">
+                        </div>
                     </div>
+                    <div *ngIf="menuForm?.value?.inputDataType=='custom'" class="custom-input-data">
+                        <input formControlName="inputData" placeholder="10101">
+                    </div>
+                    <div class="set-name">częstotliwość nośna:</div>
+                    <div class="custom-input-data">
+                        <input formControlName="inputFrequency" placeholder="200">
+                    </div>
+                    <!-- <div class="custom-select">
+                        <select formControlName="scale" placeholder="GHz">
+                            <option>Hz</option>
+                            <option>MHz</option>
+                            <option>GHz</option>
+                        </select>
+                    </div> -->
+
+
+                    <div class="custom-select">
+                            <div class="custom-select-drop">{{menuForm?.value?.scale}} <span (click)="showOptions()">{{show ? '&#9660;' : '&#9650;'}}</span>
+                                <div class="options-container" *ngIf="show">
+                                        <label class='label-radio' *ngFor="let option of scaleOptions" for="{{option}}">
+                                                <input type="radio" value="{{option}}" id="{{option}}" formControlName="scale" >
+                                                <span>{{option}}</span>
+                                            </label>
+                                </div>
+                            </div>
+                    </div>
+    
+
                 </div>
             </form>
         </div>
@@ -68,7 +93,7 @@
     <div class="content">
 
         <div>{{menuForm.value |json}}</div>
-      
+      {{show}}
         <div>SOME CONTENT</div>
         <plot></plot>
 

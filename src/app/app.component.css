@@ -77,6 +77,7 @@
   display: flex;
   flex-direction: column;
   height: 25px;
+  width: 120px;
 }
 
 .slider .input-data {
@@ -91,6 +92,7 @@
   background: #ff864e;
   outline: 0;
   cursor: pointer;
+  width: 120px;
 }
 
 [type="range"]:hover {
@@ -107,8 +109,10 @@
 }
 
 .custom-input-data {
-  margin: 0 10px;
+  /* margin: 0 10px; */
   outline: 0;
+  margin-top: -5px;
+  display: flex;
 }
 
 .custom-input-data input {
@@ -119,9 +123,21 @@
   color: #f77750;
   margin: 0 10px;
   width: 120px;
-  font-size: 14spx;
+  font-size: 14px;
 }
-  
+
+option:after{
+  content: 'dd';
+  background-color: red;
+}
+
+select{
+  background: transparent;
+  border: none;
+  color: #f77750;
+  outline: none;
+}
+
 .content {
   position: relative;
   padding: 0 40px;
@@ -131,6 +147,21 @@
   width: 125px;
   height: 180px;
 } 
+
+.custom-select-drop{
+  cursor: pointer;
+}
+
+.options-container{
+  position: absolute;
+
+  display: flex;
+  flex-flow: column;
+}
+
+.options-container [type="radio"] + span:before {
+  content:none;
+}
 
 /* @media (max-width: 450px){
   .option-set {
