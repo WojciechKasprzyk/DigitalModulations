@@ -10,7 +10,7 @@
   
 #menu {
     position: absolute;
-    height: 150px;
+    height: 100px;
     background: #242324;
     border: 1px solid #2e2c2e;
     top: 10px;
@@ -101,15 +101,15 @@
         
 [type="range"]::-webkit-slider-thumb {
   appearance: none;
-  width: 2px;
+  width: 10px;
   height: 10px;
   -webkit-appearance: none;
   background-color: #ff864e;
   cursor: pointer;
+  border-radius: 50%;
 }
 
 .custom-input-data {
-  /* margin: 0 10px; */
   outline: 0;
   margin-top: -5px;
   display: flex;
@@ -126,10 +126,6 @@
   font-size: 14px;
 }
 
-option:after{
-  content: 'dd';
-  background-color: red;
-}
 
 select{
   background: transparent;
@@ -150,13 +146,19 @@ select{
 
 .custom-select-drop{
   cursor: pointer;
+  position: relative;
 }
 
 .options-container{
   position: absolute;
-
   display: flex;
   flex-flow: column;
+  background-color: white;
+  top: 20px; 
+  /* left: 45px;  */
+  width: 54px;
+  padding: 2px;
+  border-radius: 10%;
 }
 
 .options-container [type="radio"] + span:before {
@@ -170,3 +172,61 @@ select{
     flex-direction: column; 
   }
 } */
+
+.input-container {
+  position:relative;
+  transition: 0.5s;
+  margin: 0 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #d8d4d3;
+  -webkit-transition:0.5s;
+  width: 120px;
+}
+
+.input-container:hover {
+  border-bottom: 1px solid rgba(0,0,0,0);
+}
+
+.input-container::before {
+  width: 100%;
+  height:100%;
+  z-index: 3;
+  content:'';
+  position: absolute;
+  top:1px;
+  left:0;
+  box-sizing: border-box;
+  -webkit-transform: scale(0);
+  transition: 0.5s;
+}
+
+.input-effect::before {
+  border-bottom: 1px solid #f76b40;
+  -webkit-transform-origin: 50% 100%;
+}
+
+.input-container:hover::before {
+  -webkit-transform: scale(1);
+}
+
+input{
+  z-index:999;
+  position: relative;
+  outline: none;
+  border: none;
+  background-color: transparent;
+  color: #f77750;
+  width: 120px;
+}
+
+.scale{
+  margin: 0px 20px 0px 2px;
+}
+/* 
+input:focus {
+  border-bottom: 1px solid #f76b40;
+} */
+
+.validator{
+  position: absolute;
+}

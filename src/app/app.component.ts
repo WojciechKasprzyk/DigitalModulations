@@ -10,28 +10,46 @@ import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
 })
 export class AppComponent implements OnInit{
   isScrolled = false;
+  inputData =[];
   isScrolledF = false;
-  show = false; 
-  scaleOptions = ["Hz", "MHz", "GHz"]
   menuForm: FormGroup;
   constructor(private appService: AppService, private fb: FormBuilder,) {
     this.menuForm = this.fb.group({
       modulationType: ['BPSK', Validators.required],
       inputDataLength: [5, Validators.required],
       inputDataType: ['random', Validators.required],
-      inputData: ['', Validators.required],
+      inputData: ['', [Validators.required, Validators.pattern('^[0-1]+$')]],
       inputFrequency: ['', Validators.required],
-      scale: ['MHz', Validators.required],
+      bitsSpeed: ['', Validators.required]
+      // scale: ['MHz', Validators.required],
     });
 }
 
   ngOnInit(): void {
-    this.menuForm.get('scale').valueChanges.subscribe(value => this.show=false);
+    this.randomDataGenerator(3);
+    this.menuForm.get('inputData').valueChanges.subscribe(value => this.inputData.push(value.slice(-1)));
+    this.menuForm.get('inputDataType').valueChanges.subscribe( () => this.inputData = []);
+  }
+
+  randomDataGenerator(number){
+    this.inputData=[];
+    let randomData=[];
+    for(let i=0; i<number;i++){
+      this.inputData.push(Math.floor(Math.random()*2))
+    }
+    console.log(this.inputData);
+    for(let i=0; i<Math.pow(2, number)-1; i++){
+      this.inputData.unshift(this.inputData[this.inputData.length -1] ^ this.inputData[this.inputData.length -2]);
+      randomData.push(this.inputData[this.inputData.length -1]);
+      this.inputData.pop();
+    }
+
+    console.log(randomData);
   }
 
   showOptions(){
-    this.show = !this.show;
   }
+
 
   // async keyDown(key){
   //   if(key.key != 'Backspace'){
@@ -49,10 +67,10 @@ export class AppComponent implements OnInit{
       this.isScrolled = false;
     }
 
-    if (event.target.scrollingElement.scrollTop > 75) {
-      this.isScrolledF = true;
-    } else {
-      this.isScrolledF = false;
-    }
+    // if (event.target.scrollingElement.scrollTop > 75) {
+    //   this.isScrolledF = true;
+    // } else {
+    //   this.isScrolledF = false;
+    // }
   }
 }

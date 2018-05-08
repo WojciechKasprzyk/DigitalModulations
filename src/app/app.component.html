@@ -54,35 +54,36 @@
                     <div *ngIf="menuForm?.value?.inputDataType=='random'" class="slider">
                         <div class="input-data">{{menuForm.value.inputDataLength}}</div>
                         <div>
-                            <input type="range" min="1" max="20" value="5" formControlName="inputDataLength">
+                            <input type="range" min="1" max="20" value="5" formControlName="inputDataLength">        
                         </div>
                     </div>
-                    <div *ngIf="menuForm?.value?.inputDataType=='custom'" class="custom-input-data">
-                        <input formControlName="inputData" placeholder="10101">
+                    <div *ngIf="menuForm?.value?.inputDataType=='custom'" class='input-container input-effect'>
+                        <input formControlName="inputData" placeholder="10101">                    
+                        <div class='validator' [hidden]="!menuForm.get('inputData').errors.pattern">use 0 or 1</div>
                     </div>
-                    <div class="set-name">częstotliwość nośna:</div>
-                    <div class="custom-input-data">
-                        <input formControlName="inputFrequency" placeholder="200">
-                    </div>
-                    <!-- <div class="custom-select">
-                        <select formControlName="scale" placeholder="GHz">
-                            <option>Hz</option>
-                            <option>MHz</option>
-                            <option>GHz</option>
-                        </select>
-                    </div> -->
 
 
-                    <div class="custom-select">
-                            <div class="custom-select-drop">{{menuForm?.value?.scale}} <span (click)="showOptions()">{{show ? '&#9660;' : '&#9650;'}}</span>
+                    <div class="set-name">prędkość bitowa:</div>
+                    <div class='input-container input-effect'>
+                        <input formControlName="bitsSpeed" placeholder="500"/>
+                      </div>
+                      <div class="scale">kb/s</div>
+
+
+                    <div class="set-name">częstotliwość transmisji:</div>
+                    <div class='input-container input-effect'>
+                        <input formControlName="inputFrequency" placeholder="20"/>
+                      </div>
+                    <div class="scale"> MHz </div>
+
+                            <!-- <div class="custom-select-drop">{{menuForm?.value?.scale}} <span (click)="showOptions()">&#9660;</span>
                                 <div class="options-container" *ngIf="show">
                                         <label class='label-radio' *ngFor="let option of scaleOptions" for="{{option}}">
                                                 <input type="radio" value="{{option}}" id="{{option}}" formControlName="scale" >
                                                 <span>{{option}}</span>
                                             </label>
                                 </div>
-                            </div>
-                    </div>
+                            </div> -->
     
 
                 </div>
@@ -93,7 +94,9 @@
     <div class="content">
 
         <div>{{menuForm.value |json}}</div>
-      {{show}}
+      {{inputData}}
+
+     
         <div>SOME CONTENT</div>
         <plot></plot>
 
