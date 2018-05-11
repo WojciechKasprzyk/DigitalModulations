@@ -16,7 +16,7 @@ export class AppComponent implements OnInit{
   constructor(private appService: AppService, private fb: FormBuilder,) {
     this.menuForm = this.fb.group({
       modulationType: ['BPSK', Validators.required],
-      inputDataLength: [5, Validators.required],
+      inputDataLength: [0, Validators.required],
       inputDataType: ['random', Validators.required],
       inputData: ['', [Validators.required, Validators.pattern('^[0-1]+$')]],
       inputFrequency: ['', Validators.required],
@@ -73,4 +73,12 @@ export class AppComponent implements OnInit{
     //   this.isScrolledF = false;
     // }
   }
+
+  sliderColor(){
+    const filledPercent = this.menuForm.get('inputDataLength').value/20*100;
+    console.log(filledPercent)
+    const empty = 100 - filledPercent; 
+    console.log( "linear-gradient(to right, red" + filledPercent+"%, white" + empty +"%)");
+    return { "background": "linear-gradient(to right, red " + filledPercent+"%, white " + empty +"%)"};
+    }
 }

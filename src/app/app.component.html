@@ -4,6 +4,7 @@
     <div id="menu">
         <div class="menu-wrapper">
             <form [formGroup]="menuForm">
+                <!-- <div class="b-set-name">TRANSSMITION</div> -->
                 <div class="option-set">
                     <div class="set-name">type of modulation:</div>
                     <div>
@@ -36,7 +37,20 @@
                             <span>64QAM</span>
                         </label>
                     </div>
+                    <div class="set-name">bit rate:</div>
+                    <div class='input-container input-effect'>
+                        <input formControlName="bitsSpeed" placeholder="500"/>
+                      </div>
+                      <div class="scale">kb/s</div>
+
+
+                    <div class="set-name">transmission frequency</div>
+                    <div class='input-container input-effect'>
+                        <input formControlName="inputFrequency" placeholder="20"/>
+                      </div>
+                    <div class="scale"> MHz </div>
                 </div>
+                                <!-- <div class="b-set-name">TRANSSMITION</div> -->
                 <div class="option-set">
                     <div class="set-name">input data:</div>
                     <div>
@@ -51,41 +65,19 @@
                             <span>custom</span>
                         </label>
                     </div>
-                    <div *ngIf="menuForm?.value?.inputDataType=='random'" class="slider">
+                    <div class="set-name">vector:</div>
+                    <div class='input-container input-effect'>
+                            <input formControlName="inputData" placeholder="10101">                    
+                            <div class='validator' [hidden]="!menuForm.get('inputData').errors.pattern">use 0 or 1</div>
+                    </div>
+                    <div *ngIf="menuForm?.value?.inputDataType=='random'" class="set-name">length:</div>
+                    <div class="slider">
                         <div class="input-data">{{menuForm.value.inputDataLength}}</div>
                         <div>
-                            <input type="range" min="1" max="20" value="5" formControlName="inputDataLength">        
+                            <input [ngStyle]="sliderColor()" type="range" min="0" max="20" value="5" formControlName="inputDataLength"> 
                         </div>
                     </div>
-                    <div *ngIf="menuForm?.value?.inputDataType=='custom'" class='input-container input-effect'>
-                        <input formControlName="inputData" placeholder="10101">                    
-                        <div class='validator' [hidden]="!menuForm.get('inputData').errors.pattern">use 0 or 1</div>
-                    </div>
-
-
-                    <div class="set-name">prędkość bitowa:</div>
-                    <div class='input-container input-effect'>
-                        <input formControlName="bitsSpeed" placeholder="500"/>
-                      </div>
-                      <div class="scale">kb/s</div>
-
-
-                    <div class="set-name">częstotliwość transmisji:</div>
-                    <div class='input-container input-effect'>
-                        <input formControlName="inputFrequency" placeholder="20"/>
-                      </div>
-                    <div class="scale"> MHz </div>
-
-                            <!-- <div class="custom-select-drop">{{menuForm?.value?.scale}} <span (click)="showOptions()">&#9660;</span>
-                                <div class="options-container" *ngIf="show">
-                                        <label class='label-radio' *ngFor="let option of scaleOptions" for="{{option}}">
-                                                <input type="radio" value="{{option}}" id="{{option}}" formControlName="scale" >
-                                                <span>{{option}}</span>
-                                            </label>
-                                </div>
-                            </div> -->
-    
-
+                   
                 </div>
             </form>
         </div>
