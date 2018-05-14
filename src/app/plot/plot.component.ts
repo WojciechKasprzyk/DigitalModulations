@@ -12,23 +12,24 @@ import * as _ from 'lodash';
 })
 export class PlotComponent implements OnInit {
   @ViewChild('plot') plotObject: ElementRef;
+  bits: number[] = [1, 0, 1, 1, 1, 0, 0, 1, 0, 1];  // @Input() lub service 
   frames: Frame[] = [
     { name: 'sine', data: [{ x: [], y: [] }] },
-    { name: 'cosine', data: [{ x: [], y: [] }] },
-    { name: 'circle', data: [{ x: [], y: [] }] },
     { name: 'square', data: [{ x: [], y: [] }] },
+    { name: 'bpsk', data: [{ x: [], y: [] }] },
   ];
+  private scale = 2;
   private _frequency;
-  set frequency(f:number) {
-    this._frequency = f*2;
+  set frequency(f: number) {
+    this._frequency = f * 2;
   }
   get frequency() {
     return this._frequency;
   }
-  samplingRate = 100 * 3.14;
+  private samplingRate = 1400;    // 700 to optymalne rozwiązanie
   private _periods: number;
-  set periods(p:number) {
-    this._periods = p*2;
+  set periods(p: number) {
+    this._periods = p * 2;
   }
   get periods() {
     return this._periods;
@@ -38,47 +39,66 @@ export class PlotComponent implements OnInit {
 
   ngOnInit() {
     this.plotObject = this.plotObject.nativeElement;
+    // parameters setters
+    this.periods = 50;
+    this.frequency = 50;
+
     this.funtionPlot();
   }
 
-  // addBit(bit: 0 | 1, , array) {
-  //   for (let i = 0; i < ; i++)
-  // }
 
-  funtionPlot() {
-    /*
-    * frequency - czestotliwość
-    * samplingRate - gęstość dyskretyzcji, np 100 próbek na sekunde
-    * 
-    *
-    */
-    this.periods = 1;
-    this.frequency = 2
-    let sign = 1;
 
-    const bits = [1, 0, 1, 1, 1, 0, 0, 1, 0, 1]
-    for (let i = 0; i < this.samplingRate; i++) {
-      const t = i / ((this.samplingRate - 1)*this.frequency) * this.periods;
+  harmonic() {
+    for (let i = 0, t = i;
+      i < this.samplingRate;
+      i++ , t = i / ((this.samplingRate - 1) * this.frequency) * this.periods) {
 
       // A sine wave:
-      this.frames[0].data[0].x[i] = t * Math.PI;
+      this.frames[0].data[0].x[i] = t * this.scale;
       this.frames[0].data[0].y[i] = Math.sin(t * this.frequency * Math.PI);
-
-      // A cosine wave:
-      this.frames[1].data[0].x[i] = t * Math.PI;
-      this.frames[1].data[0].y[i] = 1 / 2 * Math.cos(2 * t * Math.PI) + 1 / 2 * Math.sin(t * Math.PI + Math.PI / 4);
-
-      // A circle:
-      this.frames[2].data[0].x[i] = Math.sin(t * Math.PI);
-      this.frames[2].data[0].y[i] = Math.cos(t * Math.PI);
-
-      // A square:
-      if (i % 100 === 0) sign *= (-1);
-      this.frames[3].data[0].x[i] = t * Math.PI;
-      this.frames[3].data[0].y[i] = sign;
     }
+  }
 
-    // for (const bit of bits) this.addBit(bit,frequency,this.frames[0].data[0].y);
+  /*
+  * A L G O R Y T M   K O R E K C Y J N Y
+  * floorowanie ucina kilka bitów
+  * trzeba je uzupełnić po całym procesie
+  */
+  addBit(bits) {
+    const timeToBit = Math.floor(this.samplingRate / bits.length);
+    let index = -1;
+
+    for (let i = 0, t = i;
+      i < this.samplingRate;
+      i++ , t = i / ((this.samplingRate - 1) * this.frequency) * this.periods) {
+      this.frames[1].data[0].x[i] = t * this.scale;
+      if (i % timeToBit === 0) {
+        index++;
+        if(!bits[index]) bits[index]=-1; 
+      }
+      this.frames[1].data[0].y[i] = bits[index];
+    }
+  }
+
+  bpsk() {
+    for (let i = 0, t = i;
+      i < this.samplingRate;
+      i++ , t = i / ((this.samplingRate - 1) * this.frequency) * this.periods) {
+        this.frames[2].data[0].x[i] = t * this.scale;
+        this.frames[2].data[0].y[i] = this.frames[0].data[0].y[i] * this.frames[1].data[0].y[i];
+      }
+  }
+
+
+
+
+  funtionPlot() {
+    const bits = [1, 0, 1, 1, 1, 0, 0, 1, 0, 1]
+    this.addBit(bits);
+
+    this.harmonic();
+
+    this.bpsk();
 
     Plotly.plot(this.plotObject, [{
       x: this.frames[0].data[0].x,
@@ -93,9 +113,8 @@ export class PlotComponent implements OnInit {
           type: 'buttons',
           buttons: [
             { method: 'animate', args: [['sine']], label: 'sine' },
-            { method: 'animate', args: [['cosine']], label: 'cosine' },
-            { method: 'animate', args: [['circle']], label: 'circle' },
-            { method: 'animate', args: [['square']], label: 'square' }
+            { method: 'animate', args: [['square']], label: 'square' },
+            { method: 'animate', args: [['bpsk']], label: 'bpsk' },
           ]
         }],
       }, { displayModeBar: true }).then(() => {
@@ -103,7 +122,6 @@ export class PlotComponent implements OnInit {
       });
   }
 }
-
 
 interface PlotSecondParam {
   xaxis?: { range: number[] };
