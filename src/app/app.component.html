@@ -4,7 +4,7 @@
     <div id="menu">
         <div class="menu-wrapper">
             <form [formGroup]="menuForm">
-                <!-- <div class="b-set-name">TRANSSMITION</div> -->
+                <div class="b-set-name">TRANSMISSION</div>
                 <div class="option-set">
                     <div class="set-name">type of modulation:</div>
                     <div>
@@ -50,10 +50,9 @@
                       </div>
                     <div class="scale"> MHz </div>
                 </div>
-                                <!-- <div class="b-set-name">TRANSSMITION</div> -->
+                <div class="b-set-name">INPUT DATA</div>
                 <div class="option-set">
-                    <div class="set-name">input data:</div>
-                    <div>
+                    <!-- <div>
                         <label class='label-radio' for="random">
                             <input type="radio" value="random" id="random" formControlName="inputDataType">
                             <span>random</span>
@@ -64,18 +63,23 @@
                             <input type="radio" value="custom" id="custom" formControlName="inputDataType">
                             <span>custom</span>
                         </label>
-                    </div>
+                    </div> -->
                     <div class="set-name">vector:</div>
                     <div class='input-container input-effect'>
-                            <input formControlName="inputData" placeholder="10101">                    
-                            <div class='validator' [hidden]="!menuForm.get('inputData').errors.pattern">use 0 or 1</div>
+                            <input formControlName="inputVector" placeholder="10101">                    
+                            <div class='validator' [hidden]="!menuForm.get('inputVector')?.errors?.pattern">use 0 or 1</div>
                     </div>
-                    <div *ngIf="menuForm?.value?.inputDataType=='random'" class="set-name">length:</div>
+                    <div class="set-name">length:</div>
                     <div class="slider">
                         <div class="input-data">{{menuForm.value.inputDataLength}}</div>
                         <div>
                             <input [ngStyle]="sliderColor()" type="range" min="0" max="20" value="5" formControlName="inputDataLength"> 
                         </div>
+                    </div>
+                    <div class="set-name">data:</div>
+                    <div class='input-container input-effect'>
+                            <input formControlName="inputData" >                    
+                            <div class='validator' [hidden]="!menuForm.get('inputData')?.errors?.pattern">use 0 or 1</div>
                     </div>
                    
                 </div>
@@ -86,7 +90,7 @@
     <div class="content">
 
         <div>{{menuForm.value |json}}</div>
-      {{inputData}}
+      dd{{generatedInputData}}
 
      
         <div>SOME CONTENT</div>
