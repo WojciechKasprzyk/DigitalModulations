@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ChangeDetectionStrategy, Input } from '@angular/core';
 import * as _ from 'lodash';
 
 
@@ -16,6 +16,9 @@ import * as _ from 'lodash';
   styleUrls: ['./plot.component.css'],
 })
 export class PlotComponent implements OnInit {
+  @Input() pramsSet/*: ParamsSet*/;
+  @Input() _addBit: (bits) => void;
+  @Input() modulation: ()=> void; 
   @ViewChild('plot') plotObject: ElementRef;
   bits: number[] = [1, 0, 1, 1, 1, 0, 0, 1, 0, 1];  // @Input() lub service 
   bitsQPSK = [2, 1, 2, 0/* powinno być 1*/, 1];
@@ -108,7 +111,6 @@ export class PlotComponent implements OnInit {
       this.frames[3].data[0].x[i] = t * this.scale;
 
       this.frames[3].data[0].y[i] = Math.sin(t * this.frequency * Math.PI + Math.PI/4 + 2*this.frames[3].data[1].y[i] * Math.PI / 4);
-  
     }
   }
 
@@ -139,7 +141,7 @@ export class PlotComponent implements OnInit {
 
     this.qpsk();
 
-    Plotly.plot(this.plotObject, this.getFrame('sine', 'square'), {
+    Plotly.plot(this.plotObject, this.getFrame('sine', 'square', 'bpsk'), {
       // xaxis: { range: [0, periodsNumber * frequency * Math.PI] },
       // yaxis: { range: [-1.2, 1.2] },
       autosize: true,
@@ -258,40 +260,3 @@ interface Frame {
   data: Array<{ x?: number[], y: number[] }>;
 }
 
-
-
-
-const a ={
-  vitId:0,
-  confCode:0,
-  vipDocument:false,
-  documentId:"f568dab6-bd04-40ea-a49e-885a493401dc",
-  ecmObjectId:"200696",
-  patientId:"7a988eab-869c-4ffc-96f9-40c65fde99af",
-  documentTypeId:"70004-7",
-  documentTypeName:"Opis badania diagnostycznego",
-  medicalEntityId:"0010860007",
-  medicalEntityName:"Pomorskie e-Zdrowie",
-  doctorId:"NA",
-  doctorName:"SZCZEPAN",
-  doctorSurname:"BARTER",
-  date:"20170727120010",
-  isSigned:false,
-  externalPatientId:"7a988eab-869c-4ffc-96f9-40c65fde99af",
-  externalSystemName:"RND2",
-  patientFirstName:"ALEKSY",
-  patientSurname:"DRABUN",
-  patientPesel:"50042331176",
-  doctorNpwz:"5154361",
-  medicalName:"Oddział Chorób Wewnętrznych",
-  medicalId:"0010860",
-  medicalUnitName:"Pomorskie e-Zdrowie",
-  medicalUnitId:"001086001",
-  fromDate:"20170727120010",
-  toDate:"NA",
-  externalDocumentId:"88551",
-  hospitalizationId:"RND23e8116bb-e200-4fc1-873f-39e8426fecda",
-  repositoryId:"RND2",
-  signStatus:"NOT_SIGNED",
-  mimeType:"text/xml"
-  },
