@@ -80,4 +80,13 @@ export class AppComponent implements OnInit {
     const empty = 100 - filledPercent;
     return filledPercent >= 50 ? { "background": "linear-gradient(to right, #f77750 " + filledPercent + "%, #d8d4d3 " + empty + "%)" } : { "background": "linear-gradient(to left, #d8d4d3 " + empty + "%, #f77750 " + filledPercent + "%)" };
   }
+
+  focusFunction(e){
+    e.target.parentElement.style.borderBottom = "1px solid #f76b40"; 
+    console.log(e.target.parentElement)
+  }
+
+  focusOutFunction(e){
+    e.target.parentElement.style.borderBottom = "1px solid #d8d4d3"; 
+  }
 }

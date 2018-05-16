@@ -39,34 +39,22 @@
                     </div>
                     <div class="set-name">bit rate:</div>
                     <div class='input-container input-effect'>
-                        <input formControlName="bitsSpeed" placeholder="500"/>
+                        <input formControlName="bitsSpeed" placeholder="500" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)"/>
                       </div>
                       <div class="scale">kb/s</div>
 
 
                     <div class="set-name">transmission frequency</div>
                     <div class='input-container input-effect'>
-                        <input formControlName="inputFrequency" placeholder="20"/>
+                        <input formControlName="inputFrequency" placeholder="20" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)"/>
                       </div>
                     <div class="scale"> MHz </div>
                 </div>
                 <div class="b-set-name">INPUT DATA</div>
                 <div class="option-set">
-                    <!-- <div>
-                        <label class='label-radio' for="random">
-                            <input type="radio" value="random" id="random" formControlName="inputDataType">
-                            <span>random</span>
-                        </label>
-                    </div>
-                    <div>
-                        <label class='label-radio' for="custom">
-                            <input type="radio" value="custom" id="custom" formControlName="inputDataType">
-                            <span>custom</span>
-                        </label>
-                    </div> -->
                     <div class="set-name">vector:</div>
                     <div class='input-container input-effect'>
-                            <input formControlName="inputVector" placeholder="10101">                    
+                            <input formControlName="inputVector" placeholder="10101" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)">                    
                             <div class='validator' [hidden]="!menuForm.get('inputVector')?.errors?.pattern">use 0 or 1</div>
                     </div>
                     <div class="set-name">length:</div>
@@ -77,8 +65,8 @@
                         </div>
                     </div>
                     <div class="set-name">data:</div>
-                    <div class='input-container input-effect'>
-                            <input formControlName="inputData" >                    
+                    <div class="input-container input-effect">
+                            <input formControlName="inputData" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)">                   
                             <div class='validator' [hidden]="!menuForm.get('inputData')?.errors?.pattern">use 0 or 1</div>
                     </div>
                    
