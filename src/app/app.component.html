@@ -1,88 +1,56 @@
-<div id="wrap" [ngClass]="{'wrap': true, 'fix-menu': isScrolled, 'fix-menu-smaller': isScrolledF}">
-    <div class="top"></div>
-
+<div class="top-container">
+<div class="header">digital modulations demo </div>
+<div id="wrap" [ngClass]="{'wrap': true}">
     <div id="menu">
         <div class="menu-wrapper">
-            <form [formGroup]="menuForm">
-                <div class="b-set-name">TRANSMISSION</div>
-                <div class="option-set">
-                    <div class="set-name">type of modulation:</div>
-                    <div>
-                        <label class='label-radio' for="BPSK">
-                            <input type="radio" value="BPSK" id="BPSK" formControlName="modulationType">
-                            <span>BPSK</span>
-                        </label>
-                    </div>
-                    <div>
-                        <label class='label-radio' for="QPSK">
-                            <input type="radio" value="QPSK" id="QPSK" formControlName="modulationType">
-                            <span>QPSK</span>
-                        </label>
-                    </div>
-                    <div>
-                        <label class='label-radio' for="8QAM">
-                            <input type="radio" value="8QAM" id="8QAM" formControlName="modulationType">
-                            <span>8QAM</span>
-                        </label>
-                    </div>
-                    <div>
-                        <label class='label-radio' for="16QAM">
-                            <input type="radio" value="16QAM" id="16QAM" formControlName="modulationType">
-                            <span>16QAM</span>
-                        </label>
-                    </div>
-                    <div>
-                        <label class='label-radio' for="64QAM">
-                            <input type="radio" value="64QAM" id="64QAM" formControlName="modulationType">
-                            <span>64QAM</span>
-                        </label>
-                    </div>
+            <div *ngFor="let form of menuForm, let i=index">
+            <form [formGroup]="form">
+                <div class="option-set"> <span>signal {{i+1}}</span>
                     <div class="set-name">bit rate:</div>
-                    <div class='input-container input-effect'>
+                   <div class='input-container input-effect'>
                         <input formControlName="bitsSpeed" placeholder="500" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)"/>
                       </div>
                       <div class="scale">kb/s</div>
-
 
                     <div class="set-name">transmission frequency</div>
                     <div class='input-container input-effect'>
                         <input formControlName="inputFrequency" placeholder="20" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)"/>
                       </div>
                     <div class="scale"> MHz </div>
-                </div>
-                <div class="b-set-name">INPUT DATA</div>
-                <div class="option-set">
+
                     <div class="set-name">vector:</div>
                     <div class='input-container input-effect'>
                             <input formControlName="inputVector" placeholder="10101" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)">                    
-                            <div class='validator' [hidden]="!menuForm.get('inputVector')?.errors?.pattern">use 0 or 1</div>
+                            <div class='validator' [hidden]="!form.get('inputVector')?.errors?.pattern">use 0 or 1</div>
                     </div>
                     <div class="set-name">length:</div>
                     <div class="slider">
-                        <div class="input-data">{{menuForm.value.inputDataLength}}</div>
+                        <div class="input-data">{{form.value.inputDataLength}}</div>
                         <div>
-                            <input [ngStyle]="sliderColor()" type="range" min="0" max="20" value="5" formControlName="inputDataLength"> 
+                            <input [ngStyle]="sliderColor(form)" type="range" min="0" max="20" value="5" formControlName="inputDataLength"> 
                         </div>
                     </div>
                     <div class="set-name">data:</div>
                     <div class="input-container input-effect">
                             <input formControlName="inputData" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)">                   
-                            <div class='validator' [hidden]="!menuForm.get('inputData')?.errors?.pattern">use 0 or 1</div>
+                            <div class='validator' [hidden]="!form.get('inputData')?.errors?.pattern">use 0 or 1</div>
                     </div>
-                   
                 </div>
+
             </form>
+            </div>
         </div>
     </div>
+</div>
 
     <div class="content">
 
-        <div>{{menuForm.value |json}}</div>
-      dd{{generatedInputData}}
+        <div>{{menuForm[0].value |json}}</div>
+        <div>{{menuForm[1].value |json}}</div>
 
      
         <div>SOME CONTENT</div>
-        <plot></plot>
+
 
     </div>
 </div>

@@ -1,7 +1,19 @@
 import { Component, HostListener } from '@angular/core';
 import { AppService } from './app.service';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
+
+import {TweenLite, TimelineMax, Power1, TweenMax} from "gsap";
+
+const formsFields = {
+  inputDataLength: [0, Validators.required],
+  inputVector: ['', [Validators.required, Validators.pattern('^[0-1]+$')]],
+  inputData: [this.generatedInputData, [Validators.required, Validators.pattern('^[0-1]+$')]],
+  inputFrequency: ['', Validators.required],
+  bitsSpeed: ['', Validators.required]
+}
+
+
 
 @Component({
   selector: 'app-root',
@@ -13,33 +25,71 @@ export class AppComponent implements OnInit {
   generatedInputData=[];
   inputVectorArray;
   isScrolledF = false;
-  menuForm: FormGroup;
-  constructor(private appService: AppService, private fb: FormBuilder, ) {
-    this.menuForm = this.fb.group({
-      modulationType: ['BPSK', Validators.required],
-      inputDataLength: [0, Validators.required],
-      // inputDataType: ['random', Validators.required],
-      inputVector: ['', [Validators.required, Validators.pattern('^[0-1]+$')]],
-      inputData: [this.generatedInputData, [Validators.required, Validators.pattern('^[0-1]+$')]],
-      inputFrequency: ['', Validators.required],
-      bitsSpeed: ['', Validators.required]
-    });
+  firstOn = true;
+  menuForm;
+  constructor(private appService: AppService, private fb: FormBuilder ) {
+    this.menuForm = [this.fb.group(formsFields), this.fb.group(formsFields)]
+
+    // this.menuForm = this.fb.group({
+    //   // modulationType: ['BPSK', Validators.required],
+    //   inputDataLength: [0, Validators.required],
+    //   // inputDataType: ['random', Validators.required],
+    //   inputVector: ['', [Validators.required, Validators.pattern('^[0-1]+$')]],
+    //   inputData: [this.generatedInputData, [Validators.required, Validators.pattern('^[0-1]+$')]],
+    //   inputFrequency: ['', Validators.required],
+    //   bitsSpeed: ['', Validators.required]
+    // });
   }
 
-  ngOnInit(): void {
-    this.menuForm.get('inputVector').valueChanges.subscribe(value => {
-      this.inputVectorArray = this.menuForm.get('inputVector').value.split("");
-      this.randomDataGenerator(this.menuForm.get('inputDataLength').value);
-      this.menuForm.patchValue({inputData: this.generatedInputData.toString().replace(/,/g,'')}); 
-    });
 
-    this.menuForm.get('inputDataLength').valueChanges.subscribe(value => {
-      if  (this.menuForm.get('inputVector').value!="")
-      {
-        this.randomDataGenerator(this.menuForm.get('inputDataLength').value);
-        this.menuForm.patchValue({inputData: this.generatedInputData.toString().replace(/,/g,'')}); 
+  //  timeline = new TimelineMax({
+  //   onComplete: function() {
+  //     this.restart();
+  //   }
+  // });
+  
+  //  from = {
+  //              rotation: '-20',
+  //              ease: Power1.easeInOut
+  //            };
+  
+  //  to =  {
+  //             rotation: '20',
+  //             repeat: -1,
+  //             yoyo: true,
+  //             ease: Power1.easeInOut
+  //           }
+  
+
+  ngOnInit(): void {
+    this.menuForm[0].get('inputVector').valueChanges.subscribe(value => {
+      this.inputVectorArray = this.menuForm[0].get('inputVector').value.split("");
+      if(this.menuForm[0].get('inputVector').errors==null){
+        this.randomDataGenerator(this.menuForm[0].get('inputDataLength').value);
+        this.menuForm[0].patchValue({inputData: this.generatedInputData.toString().replace(/,/g,'')}); 
+      }
+      else{
+        this.menuForm[0].patchValue({inputData: ''}); 
       }
     });
+
+    this.menuForm[0].get('inputDataLength').valueChanges.subscribe(value => {
+      if  (this.menuForm[0].get('inputVector').value!="")
+      {
+        if(this.menuForm[0].get('inputVector').errors==null){
+          this.randomDataGenerator(this.menuForm[0].get('inputDataLength').value);
+          this.menuForm[0].patchValue({inputData: this.generatedInputData.toString().replace(/,/g,'')}); 
+      }
+      else{
+        this.menuForm[0].patchValue({inputData: ''}); 
+      }
+    }
+    });
+
+
+    // let x = document.getElementById("e");
+    // TweenMax.fromTo(x, 1.3, this.from, this.to);
+
   }
 
   randomDataGenerator(number) {
@@ -47,7 +97,7 @@ export class AppComponent implements OnInit {
 
     this.generatedInputData = [];
 
-    if (tmpInputVectorArray.length >= this.menuForm.get('inputDataLength').value) this.generatedInputData = tmpInputVectorArray.slice(0, this.menuForm.get('inputDataLength').value);
+    if (tmpInputVectorArray.length >= this.menuForm[0].get('inputDataLength').value) this.generatedInputData = tmpInputVectorArray.slice(0, this.menuForm[0].get('inputDataLength').value);
     else {
       for (let i = 0; i < number; i++) {
         tmpInputVectorArray.unshift(tmpInputVectorArray[this.inputVectorArray.length - 1] ^ tmpInputVectorArray[tmpInputVectorArray.length - 2]);
@@ -55,38 +105,41 @@ export class AppComponent implements OnInit {
         tmpInputVectorArray.pop();
       }
     }
-    console.log('gen',this.generatedInputData);
+    // console.log('gen',this.generatedInputData);
   }
 
 
 
-  @HostListener('window:scroll', ['$event'])
-  onScroll(event) {
-    if (event.target.scrollingElement.scrollTop > 10) {
-      this.isScrolled = true;
-    } else {
-      this.isScrolled = false;
-    }
+  // @HostListener('window:scroll', ['$event'])
+  // onScroll(event) {
+  //   if (event.target.scrollingElement.scrollTop > 10) {
+  //     this.isScrolled = true;
+  //   } else {
+  //     this.isScrolled = false;
+  //   }
 
     // if (event.target.scrollingElement.scrollTop > 75) {
     //   this.isScrolledF = true;
     // } else {
     //   this.isScrolledF = false;
     // }
-  }
+  // }
 
-  sliderColor() {
-    const filledPercent = this.menuForm.get('inputDataLength').value / 20 * 100;
+  sliderColor(form) {
+    const filledPercent = form.get('inputDataLength').value / 20 * 100;
     const empty = 100 - filledPercent;
     return filledPercent >= 50 ? { "background": "linear-gradient(to right, #f77750 " + filledPercent + "%, #d8d4d3 " + empty + "%)" } : { "background": "linear-gradient(to left, #d8d4d3 " + empty + "%, #f77750 " + filledPercent + "%)" };
   }
 
   focusFunction(e){
     e.target.parentElement.style.borderBottom = "1px solid #f76b40"; 
-    console.log(e.target.parentElement)
   }
 
   focusOutFunction(e){
     e.target.parentElement.style.borderBottom = "1px solid #d8d4d3"; 
+  }
+
+  changeTab(){
+    this.firstOn  = !this.firstOn;
   }
 }
