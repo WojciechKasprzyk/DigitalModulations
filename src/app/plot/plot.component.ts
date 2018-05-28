@@ -18,7 +18,7 @@ import * as _ from 'lodash';
 export class PlotComponent implements OnInit {
   @Input() pramsSet/*: ParamsSet*/;
   @Input() _addBit: (bits) => void;
-  @Input() modulation: ()=> void; 
+  @Input() modulation: () => void;
   @ViewChild('plot') plotObject: ElementRef;
   bits: number[] = [1, 0, 1, 1, 1, 0, 0, 1, 0, 1];  // @Input() lub service 
   bitsQPSK = [2, 1, 2, 0/* powinno być 1*/, 1];
@@ -28,7 +28,7 @@ export class PlotComponent implements OnInit {
     { name: 'bpsk', data: [{ x: [], y: [] }, { x: [], y: [] }] },
     { name: 'qpsk', data: [{ x: [], y: [] }, { x: [], y: [] }] },
   ];
-  private scale = 2;
+  private scale = 1;
   private _frequency;
   set frequency(f: number) {
     this._frequency = f * 2;
@@ -52,13 +52,11 @@ export class PlotComponent implements OnInit {
   ngOnInit() {
     this.plotObject = this.plotObject.nativeElement;
     // parameters setters
-    this.periods = 50;
+    this.periods = 10;
     this.frequency = 50;
 
     this.funtionPlot();
   }
-
-
 
   harmonic() {
     for (let i = 0, t = i;
@@ -66,7 +64,7 @@ export class PlotComponent implements OnInit {
       i++ , t = i / ((this.samplingRate - 1) * this.frequency) * this.periods) {
 
       // A sine wave:
-      this.frames[0].data[0].x[i] = t * this.scale;
+      this.frames[0].data[0].x[i] = t;
       this.frames[0].data[0].y[i] = Math.sin(t * this.frequency * Math.PI);
       // this.frames[1].data[1].x[i] = t * this.scale;
       // this.frames[1].data[1].y[i] = Math.sin(t * this.frequency * Math.PI);
@@ -86,7 +84,7 @@ export class PlotComponent implements OnInit {
       i < this.samplingRate / scale;
       i++ , t = i / ((this.samplingRate - 1) * this.frequency) * this.periods) {
       this.frames[where].data[where2].x[i] = t * this.scale;
-      if (i % (timeToBit/scale) === 0) {
+      if (i % (timeToBit / scale) === 0) {
         index++;
         if (!bits[index]) bits[index] = -1;
       }
