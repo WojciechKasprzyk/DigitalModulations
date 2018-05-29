@@ -13,8 +13,6 @@ export class ControlPanelComponent implements OnInit {
   [x: string]: any;
   bits: number[] = [1, 0, 1, 1, 1, 0, 0, 1, 0, 1];
   paramsSet: ParamsSet = new ParamsSet({name: 'BPSK', bits: this.bits, frequency: 50, periods: 10});
-  @ViewChild('plot') plot: newPlotComponent;
-
   constructor() { }
 
   ngOnInit() {
