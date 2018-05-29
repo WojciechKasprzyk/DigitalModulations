@@ -25,7 +25,6 @@ export class AppComponent implements OnInit {
   [x: string]: any;
   // region Parametry
   bits: number[] = [1, 0, 1, 1, 1, 0, 0, 1, 0, 1];
-  paramsSet: ParamsSet = new ParamsSet({name: 'BPSK', bits: this.bits, frequency: 50, periods: 10});
   // endregion
 
   isScrolled = false;
@@ -34,67 +33,47 @@ export class AppComponent implements OnInit {
   isScrolledF = false;
   firstOn = true;
   menuForm;
+  valid = false;
   constructor(private appService: AppService, private fb: FormBuilder ) {
-    this.menuForm = [this.fb.group(formsFields), this.fb.group(formsFields)]
-
-    // this.menuForm = this.fb.group({
-    //   // modulationType: ['BPSK', Validators.required],
-    //   inputDataLength: [0, Validators.required],
-    //   // inputDataType: ['random', Validators.required],
-    //   inputVector: ['', [Validators.required, Validators.pattern('^[0-1]+$')]],
-    //   inputData: [this.generatedInputData, [Validators.required, Validators.pattern('^[0-1]+$')]],
-    //   inputFrequency: ['', Validators.required],
-    //   bitsSpeed: ['', Validators.required]
-    // });
+    // this.menuForm = [this.fb.group(formsFields), this.fb.group(formsFields)];
+    this.menuForm = [this.fb.group(formsFields)];
   }
 
-
-  //  timeline = new TimelineMax({
-  //   onComplete: function() {
-  //     this.restart();
-  //   }
-  // });
-  
-  //  from = {
-  //              rotation: '-20',
-  //              ease: Power1.easeInOut
-  //            };
-  
-  //  to =  {
-  //             rotation: '20',
-  //             repeat: -1,
-  //             yoyo: true,
-  //             ease: Power1.easeInOut
-  //           }
 
   ngOnInit(): void {
     this.menuForm[0].get('inputVector').valueChanges.subscribe(value => {
       this.inputVectorArray = this.menuForm[0].get('inputVector').value.split("");
       if(this.menuForm[0].get('inputVector').errors==null){
         this.randomDataGenerator(this.menuForm[0].get('inputDataLength').value);
-        this.menuForm[0].patchValue({inputData: this.generatedInputData.toString().replace(/,/g,'')}); 
+        this.menuForm[0].patchValue({inputData: this.generatedInputData.toString().replace(/,/g,'')});
+        this.paramsSet = new ParamsSet({name: 'BPSK', bits: this.generatedInputData, frequency: 50, periods: 10});
+
+        if(this.menuForm[0].get('inputDataLength').value!="") this.valid = true;
       }
-      else{
+      else {
         this.menuForm[0].patchValue({inputData: ''}); 
+        this.valid = false;
       }
     });
 
     this.menuForm[0].get('inputDataLength').valueChanges.subscribe(value => {
-      if  (this.menuForm[0].get('inputVector').value!="")
-      {
+      if  (this.menuForm[0].get('inputVector').value!=""){
         if(this.menuForm[0].get('inputVector').errors==null){
           this.randomDataGenerator(this.menuForm[0].get('inputDataLength').value);
           this.menuForm[0].patchValue({inputData: this.generatedInputData.toString().replace(/,/g,'')}); 
-      }
-      else{
-        this.menuForm[0].patchValue({inputData: ''}); 
+          this.paramsSet = new ParamsSet({name: 'BPSK', bits: this.generatedInputData, frequency: 50, periods: 10});
+          this.menuForm[0].get('inputDataLength').value ==0 ? this.valid=false : this.valid=true;
       }
     }
+      else {
+        this.menuForm[0].patchValue({inputData: ''}); 
+        this.valid = false;
+      }
     });
 
-
-    // let x = document.getElementById("e");
-    // TweenMax.fromTo(x, 1.3, this.from, this.to);
+    this.menuForm[0].get('inputFrequency').valueChanges.subscribe(value => {
+      this.paramsSet = new ParamsSet({name: 'BPSK', bits: this.generatedInputData, frequency: this.menuForm[0].get('inputFrequency').value, periods: 10});
+    })
 
   }
 
@@ -111,45 +90,11 @@ export class AppComponent implements OnInit {
         tmpInputVectorArray.pop();
       }
     }
-    // console.log('gen',this.generatedInputData);
   }
 
-
-
-  // @HostListener('window:scroll', ['$event'])
-  // onScroll(event) {
-  //   if (event.target.scrollingElement.scrollTop > 10) {
-  //     this.isScrolled = true;
-  //   } else {
-  //     this.isScrolled = false;
-  //   }
-
-    // if (event.target.scrollingElement.scrollTop > 75) {
-    //   this.isScrolledF = true;
-    // } else {
-    //   this.isScrolledF = false;
-    // }
-  // }
-
-  sliderColor(form) {
-    const filledPercent = form.get('inputDataLength').value / 20 * 100;
-    const empty = 100 - filledPercent;
-    return filledPercent >= 50 ? { "background": "linear-gradient(to right, #f77750 " + filledPercent + "%, #d8d4d3 " + empty + "%)" } : { "background": "linear-gradient(to left, #d8d4d3 " + empty + "%, #f77750 " + filledPercent + "%)" };
-  }
-
-  focusFunction(e){
-    e.target.parentElement.style.borderBottom = "1px solid #f76b40"; 
-  }
-
-  focusOutFunction(e){
-    e.target.parentElement.style.borderBottom = "1px solid #d8d4d3"; 
-  }
-
-  changeTab(){
-    this.firstOn  = !this.firstOn;
-  }
 
   signal(bits) {
+    console.log(bits)
     const timeToBit = Math.floor(this.paramsSet.samplingRate / bits.length);
     let index = -1;
     const frame = this.makeFrame('signal'); // ciekawe, działa można tez przez index signature this['makeFrame']('signal');
@@ -204,5 +149,20 @@ export class AppComponent implements OnInit {
   
         }
     }
+
+    sliderColor(form) {
+      const filledPercent = form.get('inputDataLength').value / 20 * 100;
+      const empty = 100 - filledPercent;
+      return filledPercent >= 50 ? { "background": "linear-gradient(to right, #f77750 " + filledPercent + "%, #d8d4d3 " + empty + "%)" } : { "background": "linear-gradient(to left, #d8d4d3 " + empty + "%, #f77750 " + filledPercent + "%)" };
+    }
+  
+    focusFunction(e){
+      e.target.parentElement.style.borderBottom = "1px solid #f76b40"; 
+    }
+  
+    focusOutFunction(e){
+      e.target.parentElement.style.borderBottom = "1px solid #d8d4d3"; 
+    }
+  
 
 }

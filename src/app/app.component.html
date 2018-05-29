@@ -6,11 +6,11 @@
             <div *ngFor="let form of menuForm, let i=index">
             <form [formGroup]="form">
                 <div class="option-set"> <span>signal {{i+1}}</span>
-                    <div class="set-name">bit rate:</div>
+                    <!-- <div class="set-name">bit rate:</div>
                    <div class='input-container input-effect'>
                         <input formControlName="bitsSpeed" placeholder="500" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)"/>
                       </div>
-                      <div class="scale">kb/s</div>
+                      <div class="scale">kb/s</div> -->
 
                     <div class="set-name">transmission frequency</div>
                     <div class='input-container input-effect'>
@@ -51,10 +51,11 @@
      
         <div>SOME CONTENT</div> -->
 
-  
-        <plot></plot>
-        <new-plot #plot [paramsSet]="paramsSet" [signal]="signal" [modulation]="bpsk"></new-plot>
-
-
+  {{valid}}
+        <!-- <plot></plot> -->
+        <new-plot *ngIf="valid" #plot [paramsSet]="paramsSet" [signal]="signal" [modulation]="bpsk"></new-plot>
+        {{generatedInputData}}
+    <br>
+    {{paramsSet |json}}
     </div>
 </div>

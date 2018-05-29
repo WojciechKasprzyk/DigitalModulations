@@ -1,9 +1,11 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, SimpleChanges, SimpleChange } from '@angular/core';
 import { ParamsSet, Frame } from '../interfaces/interfaces';
 
 @Component({
   selector: 'new-plot',
   template: `
+
+  <button (click)="x()">nacisnij mnie</button>
     <div #plot>
 
     </div>
@@ -23,9 +25,26 @@ export class newPlotComponent implements OnInit {
   ngOnInit() {
     this.plotObject = this.plotObject.nativeElement;
     this.harmonic();
+    console.log(this.paramsSet.bits)
     this.signal(this.paramsSet.bits);
     this.modulation();
     this.funtionPlot();
+  }
+
+  x(){
+    this.signal(this.paramsSet.bits);
+    this.funtionPlot();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    const name: SimpleChange = changes.paramsSet['bits'];
+
+    // console.log(changes);
+    this.signal(this.paramsSet.bits);
+    // console.log(this.paramsSet.bits)
+
+    this.funtionPlot();
+
   }
 
   makeFrame(name: string) {
@@ -63,6 +82,7 @@ export class newPlotComponent implements OnInit {
   }
 
   funtionPlot() {
+    Plotly.purge(this.plotObject);
     Plotly.plot(this.plotObject, this.getFrame('harmonic', 'signal', 'modulation'), {
       autosize: true,
       title: this.paramsSet.name
