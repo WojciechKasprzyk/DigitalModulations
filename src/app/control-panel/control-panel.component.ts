@@ -5,11 +5,12 @@ import { newPlotComponent } from '../new-plot/new-plot.component';
 @Component({
   selector: 'control-panel',
   template: `
-    <new-plot #plot [paramsSet]="paramsSet" [signal]="signal" [modulation]="bpsk"></new-plot>
+    <!--<new-plot #plot [paramsSet]="paramsSet" [signal]="signal" [modulation]="bpsk"></new-plot>-->
   `,
   styles: [``]
 })
 export class ControlPanelComponent implements OnInit {
+  [x: string]: any;
   bits: number[] = [1, 0, 1, 1, 1, 0, 0, 1, 0, 1];
   paramsSet: ParamsSet = new ParamsSet({name: 'BPSK', bits: this.bits, frequency: 50, periods: 50});
   @ViewChild('plot') plot: newPlotComponent;

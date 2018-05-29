@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ChangeDetectionStrategy, Input, HostListener } from '@angular/core';
 import * as _ from 'lodash';
 
 
@@ -9,8 +9,7 @@ import * as _ from 'lodash';
 @Component({
   selector: 'plot',
   template: `
-    <div #plot>
-
+    <div #plot id="plot">
     </div>
   `,
   styleUrls: ['./plot.component.css'],
@@ -45,9 +44,14 @@ export class PlotComponent implements OnInit {
     return this._periods;
   }
 
-
-
   constructor() { }
+
+
+  @HostListener('window:resize', ['$event'])
+  resize(): void {
+    Plotly.Plots.resize(document.getElementById('plot'));
+  }
+
 
   ngOnInit() {
     this.plotObject = this.plotObject.nativeElement;
@@ -144,7 +148,12 @@ export class PlotComponent implements OnInit {
       // yaxis: { range: [-1.2, 1.2] },
       autosize: true,
       title: 'wykres',
+      paper_bgcolor: '#f3f3f3',
+      plot_bgcolor: '#f3f3f3',
       updatemenus: [{
+        // y: -1.1, 
+        // direction: 'right',
+        // // xanchor: 'bottom',
         type: 'buttons',
         buttons: [
           { method: 'animate', args: [['sine']], label: 'sine' },
@@ -218,6 +227,8 @@ export class PlotComponent implements OnInit {
         Plotly.addFrames(this.plotObject, this.frames);
       });
   }
+
+
 }
 
 interface PlotSecondParam {
