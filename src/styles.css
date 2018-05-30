@@ -1,5 +1,8 @@
 @import url("reset-css.css");
 
+html, body{
+    height: 100%;
+}
 body {
     background: #f3f3f3;
     font-family: 'Raleway', sans-serif;

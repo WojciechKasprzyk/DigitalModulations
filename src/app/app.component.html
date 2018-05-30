@@ -1,11 +1,18 @@
-<div class="top-container">
-<div class="header">digital modulations demo </div>
+<div class="container">
+<div class="header">digital modulations demo</div>
 <div id="wrap" [ngClass]="{'wrap': true}">
     <div id="menu">
         <div class="menu-wrapper">
             <div *ngFor="let form of menuForm, let i=index">
             <form [formGroup]="form">
-                <div class="option-set"> <span>signal {{i+1}}</span>
+                <div class="option-set"> 
+                        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                        width="140.5px" height="34.5px" viewBox="0 0 140.5 34.5" enable-background="new 0 0 140.5 34.5" xml:space="preserve">
+                   <path fill="#7D5855" stroke="#7D5855" stroke-miterlimit="10" d="M-147.667-140.333"/>
+                   <polyline  class="path" fill="none" stroke="#AEADAD" stroke-miterlimit="10" points="5,29.5 30,29.5 30,4.554 55,4.554 55,29.5 80,29.5 80,4.554 
+                       105,4.554 105,29.5 130,29.5 "/>
+                   </svg>
+                    <span>signal {{i+1}}</span>
                     <!-- <div class="set-name">bit rate:</div>
                    <div class='input-container input-effect'>
                         <input formControlName="bitsSpeed" placeholder="500" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)"/>
@@ -27,7 +34,7 @@
                     <div class="slider">
                         <div class="input-data">{{form.value.inputDataLength}}</div>
                         <div>
-                            <input [ngStyle]="sliderColor(form)" type="range" min="0" max="20" value="5" formControlName="inputDataLength"> 
+                            <input [ngStyle]="sliderColor(form)" type="range" min="1" max="20" value="5" formControlName="inputDataLength"> 
                         </div>
                     </div>
                     <div class="set-name">data:</div>
@@ -44,18 +51,27 @@
 </div>
 
     <div class="content">
-<!-- 
+
         <div>{{menuForm[0].value |json}}</div>
-        <div>{{menuForm[1].value |json}}</div>
+        <!-- <div>{{menuForm[1].value |json}}</div> -->
 
      
-        <div>SOME CONTENT</div> -->
+     <!--   <div>SOME CONTENT</div> -->
 
-  {{valid}}
+  <!-- {{valid}} -->
         <!-- <plot></plot> -->
         <new-plot *ngIf="valid" #plot [paramsSet]="paramsSet" [signal]="signal" [modulation]="bpsk"></new-plot>
-        {{generatedInputData}}
+        <!-- {{generatedInputData}} -->
+
+        <div class="calculating" *ngIf="!valid">waiting for valid input data...
+        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+        width="140.5px" height="34.5px" viewBox="0 0 140.5 34.5" enable-background="new 0 0 140.5 34.5" xml:space="preserve">
+   <path fill="#7D5855" stroke="#7D5855" stroke-miterlimit="10" d="M-147.667-140.333"/>
+   <polyline  class="path" fill="none" stroke="#AEADAD" stroke-miterlimit="10" points="5,29.5 30,29.5 30,4.554 55,4.554 55,29.5 80,29.5 80,4.554 
+       105,4.554 105,29.5 130,29.5 "/>
+   </svg>
+</div>
     <br>
-    {{paramsSet |json}}
+    <!-- {{paramsSet |json}} -->
     </div>
 </div>

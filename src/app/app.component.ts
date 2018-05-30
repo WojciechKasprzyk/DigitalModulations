@@ -6,9 +6,9 @@ import { ParamsSet } from './interfaces/interfaces';
 
 
 const formsFields = {
-  inputDataLength: [0, Validators.required],
-  inputVector: ['', [Validators.required, Validators.pattern('^[0-1]+$')]],
-  inputData: [this.generatedInputData, [Validators.required, Validators.pattern('^[0-1]+$')]],
+  inputDataLength: [7, Validators.required],
+  inputVector: ['110', [Validators.required, Validators.pattern('^[0-1]+$')]],
+  inputData: ['0111001', [Validators.required, Validators.pattern('^[0-1]+$')]],
   inputFrequency: ['', Validators.required],
   bitsSpeed: ['', Validators.required]
 }
@@ -28,12 +28,12 @@ export class AppComponent implements OnInit {
   // endregion
 
   isScrolled = false;
-  generatedInputData=[];
+  generatedInputData=[0, 1, 1, 1, 0, 0, 1];
   inputVectorArray;
   isScrolledF = false;
   firstOn = true;
   menuForm;
-  valid = false;
+  valid=true;
   constructor(private appService: AppService, private fb: FormBuilder ) {
     // this.menuForm = [this.fb.group(formsFields), this.fb.group(formsFields)];
     this.menuForm = [this.fb.group(formsFields)];
@@ -41,12 +41,15 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.inputVectorArray = this.menuForm[0].get('inputVector').value.split("");
+    this.paramsSet = new ParamsSet({name: 'BPSK', bits: this.generatedInputData, frequency: 50, periods: 10});
+
+
     this.menuForm[0].get('inputVector').valueChanges.subscribe(value => {
+      console.log(this.menuForm[0].get('inputVector'))
       this.inputVectorArray = this.menuForm[0].get('inputVector').value.split("");
       if(this.menuForm[0].get('inputVector').errors==null){
-        this.randomDataGenerator(this.menuForm[0].get('inputDataLength').value);
-        this.menuForm[0].patchValue({inputData: this.generatedInputData.toString().replace(/,/g,'')});
-        this.paramsSet = new ParamsSet({name: 'BPSK', bits: this.generatedInputData, frequency: 50, periods: 10});
+        this.conductNewInputValues();
 
         if(this.menuForm[0].get('inputDataLength').value!="") this.valid = true;
       }
@@ -59,10 +62,8 @@ export class AppComponent implements OnInit {
     this.menuForm[0].get('inputDataLength').valueChanges.subscribe(value => {
       if  (this.menuForm[0].get('inputVector').value!=""){
         if(this.menuForm[0].get('inputVector').errors==null){
-          this.randomDataGenerator(this.menuForm[0].get('inputDataLength').value);
-          this.menuForm[0].patchValue({inputData: this.generatedInputData.toString().replace(/,/g,'')}); 
-          this.paramsSet = new ParamsSet({name: 'BPSK', bits: this.generatedInputData, frequency: 50, periods: 10});
-          this.menuForm[0].get('inputDataLength').value ==0 ? this.valid=false : this.valid=true;
+          this.conductNewInputValues();
+          this.valid=true;
       }
     }
       else {
@@ -75,9 +76,18 @@ export class AppComponent implements OnInit {
       this.paramsSet = new ParamsSet({name: 'BPSK', bits: this.generatedInputData, frequency: this.menuForm[0].get('inputFrequency').value, periods: 10});
     })
 
+
+
+  }
+
+  private conductNewInputValues() {
+    this.randomDataGenerator(this.menuForm[0].get('inputDataLength').value);
+    this.menuForm[0].patchValue({ inputData: this.generatedInputData.toString().replace(/,/g, '') });
+    this.paramsSet = new ParamsSet({ name: 'BPSK', bits: this.generatedInputData, frequency: 50, periods: 10 });
   }
 
   randomDataGenerator(number) {
+    console.log('iv', this.inputVectorArray)
     let tmpInputVectorArray = this.inputVectorArray.slice();
 
     this.generatedInputData = [];

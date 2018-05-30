@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, SimpleChanges, SimpleChange } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, SimpleChanges, SimpleChange, HostListener } from '@angular/core';
 import { ParamsSet, Frame } from '../interfaces/interfaces';
 
 @Component({
@@ -6,7 +6,7 @@ import { ParamsSet, Frame } from '../interfaces/interfaces';
   template: `
 
   <button (click)="x()">nacisnij mnie</button>
-    <div #plot>
+    <div #plot id="plot">
 
     </div>
   `,
@@ -36,15 +36,11 @@ export class newPlotComponent implements OnInit {
     this.funtionPlot();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  async ngOnChanges(changes: SimpleChanges) {
     const name: SimpleChange = changes.paramsSet['bits'];
-
-    // console.log(changes);
-    this.signal(this.paramsSet.bits);
-    // console.log(this.paramsSet.bits)
-
-    this.funtionPlot();
-
+    console.log(this.paramsSet.bits)
+    this.signal(await this.paramsSet.bits);
+    await this.funtionPlot();
   }
 
   makeFrame(name: string) {
@@ -88,6 +84,14 @@ export class newPlotComponent implements OnInit {
       title: this.paramsSet.name
     }, { displayModeBar: true });
   }
+
+
+  
+  @HostListener('window:resize', ['$event'])
+  resize(): void {
+    Plotly.Plots.resize(document.getElementById('plot'));
+  }
+
 }
 
 
