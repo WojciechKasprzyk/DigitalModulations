@@ -4,11 +4,7 @@ import { ParamsSet, Frame } from '../interfaces/interfaces';
 @Component({
   selector: 'new-plot',
   template: `
-
-  <button (click)="x()">nacisnij mnie</button>
-    <div #plot id="plot">
-
-    </div>
+    <div #plot id="plot"></div>
   `,
   styles: [``]
 })
@@ -25,20 +21,14 @@ export class newPlotComponent implements OnInit {
   ngOnInit() {
     this.plotObject = this.plotObject.nativeElement;
     this.harmonic();
-    console.log(this.paramsSet.bits)
     this.signal(this.paramsSet.bits);
     this.modulation();
     this.funtionPlot();
   }
 
-  x(){
-    this.signal(this.paramsSet.bits);
-    this.funtionPlot();
-  }
 
   async ngOnChanges(changes: SimpleChanges) {
     const name: SimpleChange = changes.paramsSet['bits'];
-    console.log(this.paramsSet.bits)
     this.signal(await this.paramsSet.bits);
     await this.funtionPlot();
   }
@@ -51,7 +41,6 @@ export class newPlotComponent implements OnInit {
       return this.frames[this.frames.length - 1];
     }
   }
-
 
 
   getFrame(...args: string[]) {
