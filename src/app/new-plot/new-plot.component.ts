@@ -52,15 +52,7 @@ export class newPlotComponent implements OnInit {
     }
   }
 
-  harmonic() {
-    const frame = this.makeFrame('harmonic');
-    for (let i = 0, t = i;
-      i < this.paramsSet.samplingRate;
-      i++ , t = i / ((this.paramsSet.samplingRate - 1) * this.paramsSet.frequency) * this.paramsSet.periods) {
-      frame.data[0].x[i] = t * this.paramsSet.scale;
-      frame.data[0].y[i] = Math.sin(t * this.paramsSet.frequency * Math.PI);
-    }
-  }
+
 
   getFrame(...args: string[]) {
     if (args.length === 0) return [{ x: [], y: [], line: { simplify: false } }];
@@ -92,6 +84,19 @@ export class newPlotComponent implements OnInit {
     Plotly.Plots.resize(document.getElementById('plot'));
   }
 
+  // region Modulation API
+  harmonic() {
+    const frame = this.makeFrame('harmonic');
+    for (let i = 0, t = i;
+      i < this.paramsSet.samplingRate;
+      i++ , t = i / ((this.paramsSet.samplingRate - 1) * this.paramsSet.frequency) * this.paramsSet.periods) {
+      frame.data[0].x[i] = t * this.paramsSet.scale;
+      frame.data[0].y[i] = Math.sin(t * this.paramsSet.frequency * Math.PI);
+    }
+  }
+
+
+  // endregion
 }
 
 
