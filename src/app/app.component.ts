@@ -2,7 +2,7 @@ import { Component, HostListener } from '@angular/core';
 import { AppService } from './app.service';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
-import { ParamsSet } from './interfaces/interfaces';
+import { ParamsSet, Frame } from './interfaces/interfaces';
 
 
 const formsFields = {
@@ -31,6 +31,7 @@ export class AppComponent implements OnInit {
   firstOn = true;
   menuForm;
   valid=true;
+  paramsSet: ParamsSet;
   constructor(private appService: AppService, private fb: FormBuilder ) {
     // this.menuForm = [this.fb.group(formsFields), this.fb.group(formsFields)];
     this.menuForm = [this.fb.group(formsFields)];
@@ -92,42 +93,64 @@ export class AppComponent implements OnInit {
       }
       return generatedInputData;
   }
-
-
-  signal(bits) {
-    console.log(bits)
-    const timeToBit = Math.floor(this.paramsSet.samplingRate / bits.length);
-    let index = -1;
-    const frame = this.makeFrame('signal'); // ciekawe, działa można tez przez index signature this['makeFrame']('signal');
-
+  // region New API
+  harmonic() {
+    const harmonic = this.makeFrame('harmonic');
     for (let i = 0, t = i;
-      i < this.paramsSet.samplingRate / this.paramsSet.scale;
-      i++ , t = i / ((this.paramsSet.samplingRate - 1) * this.paramsSet.frequency) * this.paramsSet.periods) {
-      frame.data[0].x[i] = t * this.paramsSet.scale;
-      if (i % (timeToBit / this.paramsSet.scale) === 0) {
-        index++;
-        if (bits[index]==0) bits[index] = -1;
-      }
-      frame.data[0].y[i] = bits[index];
+      i < this.paramsSet.samplingRate * this.paramsSet.bits.length;
+      i++ , t = i / ((this.paramsSet.samplingRate - 1) * this.paramsSet.frequency)) {
+      harmonic.data[0].x[i] = t * this.paramsSet.scale * this.paramsSet.bits.length;
+      harmonic.data[0].y[i] = Math.sin(t * this.paramsSet.frequency * Math.PI);
     }
   }
 
+  signal(bits: bit[]) {
+    const signal = this.makeFrame('signal');
+    let index = 0;
+    let t = 0;
+    for (let bit of bits) {
+      for (let i = 0; i < this.paramsSet.samplingRate; i++ , t += 1 / this.paramsSet.samplingRate / 1000 / 1000, index++) {
+        signal.data[0].x[index] = t * this.paramsSet.scale ;
+        if (bit == 0) signal.data[0].y[index] = -1; // == operator because of string type of input data
+        else signal.data[0].y[index] = 1;
+      }
+    }
+  }
+  // endregion
+
+  // signal2(bits) {
+  //   const timeToBit = Math.floor(this.paramsSet.samplingRate / bits.length);
+  //   let index = -1;
+  //   const frame = this.makeFrame('signal'); // ciekawe, działa można tez przez index signature this['makeFrame']('signal');
+
+  //   for (let i = 0, t = i;
+  //     i < this.paramsSet.samplingRate / this.paramsSet.scale;
+  //     i++ , t = i / ((this.paramsSet.samplingRate - 1) * this.paramsSet.frequency) * this.paramsSet.periods) {
+  //     frame.data[0].x[i] = t * this.paramsSet.scale;
+  //     if (i % (timeToBit / this.paramsSet.scale) === 0) {
+  //       index++;
+  //       if (!bits[index]) bits[index] = -1;
+  //     }
+  //     frame.data[0].y[i] = bits[index];
+  //   }
+  // }
+
   bpsk() {
-    const harmonicFrame = this.makeFrame('harmonic');
-    const signalFrame = this.makeFrame('signal');
+    const harmonicFrame = this.getFrame('harmonic');
+    const signalFrame = this.getFrame('signal');
     const modulationFrame = this.makeFrame('modulation');
 
-    console.log(harmonicFrame, signalFrame, modulationFrame)
-    for (let i = 0, t = i;
-      i < this.paramsSet.samplingRate / this.paramsSet.scale;
-      i++ , t = i / ((this.paramsSet.samplingRate - 1) * this.paramsSet.frequency) * this.paramsSet.periods) {
-      modulationFrame.data[0].x[i] = t * this.paramsSet.scale;
-      modulationFrame.data[0].y[i] = harmonicFrame.data[0].y[i] * signalFrame.data[0].y[i];
-    }
+    // console.log(harmonicFrame, signalFrame, modulationFrame)
+    // for (let i = 0, t = i;
+    //   i < this.paramsSet.samplingRate / this.paramsSet.scale;
+    //   i++ , t = i / ((this.paramsSet.samplingRate - 1) * this.paramsSet.frequency) * this.paramsSet.periods) {
+    //   modulationFrame.data[0].x[i] = t * this.paramsSet.scale;
+    //   modulationFrame.data[0].y[i] = harmonicFrame.data[0].y[i] * signalFrame.data[0].y[i];
+    // }
   }
 
   qpsk() { // nie testowane
-    const signalFrame = this.makeFrame('signal');
+    const signalFrame = this.getFrame('signal');
     const modulationFrame = this.makeFrame('modulation');
 
     for (let i = 0, t = i;
@@ -140,7 +163,7 @@ export class AppComponent implements OnInit {
   }
 
   qam() {
-    const signalFrame = this.makeFrame('signal');
+    const signalFrame = this.getFrame('signal');
     const modulationFrame = this.makeFrame('modulation');
     for (let i = 0, t = i;
       i < this.paramsSet.samplingRate / this.paramsSet.scale;
@@ -165,15 +188,15 @@ export class AppComponent implements OnInit {
   sliderColor(form) {
     const filledPercent = form.get('inputDataLength').value / 20 * 100;
     const empty = 100 - filledPercent;
-    return filledPercent >= 50 ? { "background": "linear-gradient(to right, #f77750 " + filledPercent + "%, #d8d4d3 " + empty + "%)" } : { "background": "linear-gradient(to left, #d8d4d3 " + empty + "%, #f77750 " + filledPercent + "%)" };
+    return filledPercent >= 50 ? { 'background': 'linear-gradient(to right, #f77750 ' + filledPercent + '%, #d8d4d3 ' + empty + '%)' } : { 'background': 'linear-gradient(to left, #d8d4d3 ' + empty + '%, #f77750 ' + filledPercent + '%)' };
   }
 
   focusFunction(e) {
-    e.target.parentElement.style.borderBottom = "1px solid #f76b40";
+    e.target.parentElement.style.borderBottom = '1px solid #f76b40';
   }
 
   focusOutFunction(e) {
-    e.target.parentElement.style.borderBottom = "1px solid #d8d4d3";
+    e.target.parentElement.style.borderBottom = '1px solid #d8d4d3';
   }
 
 }
