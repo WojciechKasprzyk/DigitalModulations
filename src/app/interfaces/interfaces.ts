@@ -1,6 +1,6 @@
 export class ParamsSet {
     name: string;
-    bits: number[];
+    bits: bit[];
     samplingRate: number;
     scale: number;
     private _frequency;
@@ -38,7 +38,10 @@ interface Params {
     scale?: number;
 }
 
-export interface Frame {
+export class Frame {
     name: string;
     data: Array<{ x?: number[], y: number[] }>;
 }
+
+
+type bit = 1 | 0;

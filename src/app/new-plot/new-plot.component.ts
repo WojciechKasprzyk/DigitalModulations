@@ -24,9 +24,9 @@ export class newPlotComponent implements OnInit {
 
   ngOnInit() {
     this.plotObject = this.plotObject.nativeElement;
-    this.harmonic();
+        this.signal(this.paramsSet.bits);
+this.harmonic();
     console.log(this.paramsSet.bits)
-    this.signal(this.paramsSet.bits);
     this.modulation();
     this.funtionPlot();
   }
@@ -43,18 +43,22 @@ export class newPlotComponent implements OnInit {
     await this.funtionPlot();
   }
 
-  makeFrame(name: string) {
+  getFrame(name: string) {
     let result = this.frames.find((frame: Frame) => frame.name === name);
     if (result !== undefined) return result;
-    else {
-      this.frames.push({ name: name, data: [{ x: [], y: [] }] });
-      return this.frames[this.frames.length - 1];
-    }
+    else throw(`cannot find frame called: ${name}`)
+  }
+
+  makeFrame(name: string) {
+    let index = this.frames.findIndex((frame: Frame) => frame.name === name);
+    if (index !== -1) this.frames.splice(index,1);
+    this.frames.push({ name: name, data: [{ x: [], y: [] }] });
+    return this.frames[this.frames.length - 1];
   }
 
 
 
-  getFrame(...args: string[]) {
+  getFrames(...args: string[]) {
     if (args.length === 0) return [{ x: [], y: [], line: { simplify: false } }];
     let result = [];
     args.forEach((arg: string) => {
@@ -71,7 +75,7 @@ export class newPlotComponent implements OnInit {
 
   funtionPlot() {
     Plotly.purge(this.plotObject);
-    Plotly.plot(this.plotObject, this.getFrame('harmonic', 'signal', 'modulation'), {
+    Plotly.plot(this.plotObject, this.getFrames('harmonic', 'signal', 'modulation'), {
       autosize: true,
       title: this.paramsSet.name
     }, { displayModeBar: true });
@@ -86,14 +90,15 @@ export class newPlotComponent implements OnInit {
 
   // region Modulation API
   harmonic() {
-    const frame = this.makeFrame('harmonic');
+    const harmonic = this.makeFrame('harmonic');
     for (let i = 0, t = i;
-      i < this.paramsSet.samplingRate;
-      i++ , t = i / ((this.paramsSet.samplingRate - 1) * this.paramsSet.frequency) * this.paramsSet.periods) {
-      frame.data[0].x[i] = t * this.paramsSet.scale;
-      frame.data[0].y[i] = Math.sin(t * this.paramsSet.frequency * Math.PI);
+      i < this.paramsSet.samplingRate * this.paramsSet.bits.length;
+      i++ , t = i / ((this.paramsSet.samplingRate - 1) * this.paramsSet.frequency * 1000 * 1000) * this.paramsSet.bits.length) {
+      harmonic.data[0].x[i] = t * this.paramsSet.scale;
+      harmonic.data[0].y[i] = Math.sin(t * this.paramsSet.frequency * Math.PI * 1000 * 1000);
     }
   }
+
 
 
   // endregion
