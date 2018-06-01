@@ -31,6 +31,8 @@ export class newPlotComponent implements OnInit {
   async ngOnChanges(changes: SimpleChanges) {
     const name: SimpleChange = changes.paramsSet['bits'];
     this.signal(await this.paramsSet.bits);
+    this.harmonic();
+
     await this.funtionPlot();
   }
 
@@ -84,7 +86,7 @@ export class newPlotComponent implements OnInit {
     const harmonic = this.makeFrame('harmonic');
     for (let i = 0, t = i;
       i < this.paramsSet.samplingRate * this.paramsSet.bits.length;
-      i++ , t = i / ((this.paramsSet.samplingRate - 1) * this.paramsSet.frequency * 1000 * 1000) * this.paramsSet.bits.length) {
+      i++ , t = i / ((this.paramsSet.samplingRate - 1) * 1000 * 1000)) {
       harmonic.data[0].x[i] = t * this.paramsSet.scale;
       harmonic.data[0].y[i] = Math.sin(t * this.paramsSet.frequency * Math.PI * 1000 * 1000);
     }

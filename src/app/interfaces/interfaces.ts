@@ -31,7 +31,7 @@ export class ParamsSet {
 
 interface Params {
     name: string;
-    bits: number[];
+    bits: bit[];
     frequency: number;
     periods: number;
     sampligRate?: number;

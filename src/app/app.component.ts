@@ -40,7 +40,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.inputVectorArray = this.menuForm[0].get('inputVector').value.split("");
-    this.paramsSet = new ParamsSet({name: 'BPSK', bits: [0, 1, 1, 1, 0, 0, 1], frequency: 50, periods: 10});
+    this.paramsSet = new ParamsSet({name: 'BPSK', bits: [0, 1, 1, 1, 0, 0, 1], frequency: 10, periods: 10});
 
     for(let i=0; i<this.menuForm.length; i++){
       this.menuForm[i].get('inputVector').valueChanges.subscribe(value => {
@@ -74,11 +74,11 @@ export class AppComponent implements OnInit {
   }
 
   private conductNewInputValues(form: FormGroup, inputName: string) {
-    if(inputName === 'inputData')  this.paramsSet = new ParamsSet({ name: 'BPSK', bits: form.get('inputData').value.split(""), frequency: 50, periods: 10 });
+    if(inputName === 'inputData')  this.paramsSet = new ParamsSet({ name: 'BPSK', bits: form.get('inputData').value.split(""), frequency: 10, periods: 10 });
     else{
     let generatedInputData = this.randomDataGenerator(form, form.get('inputDataLength').value);
     form.patchValue({ inputData: generatedInputData.toString().replace(/,/g, '') });
-    this.paramsSet = new ParamsSet({ name: 'BPSK', bits: generatedInputData, frequency: 50, periods: 10 });
+    this.paramsSet = new ParamsSet({ name: 'BPSK', bits: generatedInputData, frequency: 10, periods: 10 });
     }
   }
 
