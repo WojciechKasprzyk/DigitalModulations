@@ -147,9 +147,8 @@ select{
 }
 
 .content {
-  padding: 80px 10px;
+  padding: 20px 5px 0px 5px;
   height: 100%;
-  position: relative;
 }
 
 .custom-select-drop{
@@ -189,6 +188,10 @@ select{
   border-bottom: 1px solid #d8d4d3;
   -webkit-transition:0.5s;
   width: 180px;
+}
+
+.small{
+  width: 50px;
 }
 
 .input-container:hover {
@@ -245,7 +248,7 @@ input:focus {
 
 .calculating {
   position: absolute;
-  top: calc(50% - 20px);
+  top: calc(50% + 125px);
   left: calc(50% - 85px);
   display: flex;
   flex-direction: column;

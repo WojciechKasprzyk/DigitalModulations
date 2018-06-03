@@ -70,7 +70,9 @@ export class newPlotComponent implements OnInit {
     Plotly.purge(this.plotObject);
     Plotly.plot(this.plotObject, this.getFrames('harmonic', 'signal', 'modulation'), {
       autosize: true,
-      title: this.paramsSet.name
+      title: this.paramsSet.name,
+      paper_bgcolor: '#f3f3f3',
+      plot_bgcolor: '#f3f3f3',
     }, { displayModeBar: true });
   }
 

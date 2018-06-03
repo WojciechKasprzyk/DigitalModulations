@@ -10,6 +10,7 @@ const formsFields = {
   inputVector: ['110', [Validators.required, Validators.pattern('^[0-1]+$')]],
   inputData: ['0111001', [Validators.required, Validators.pattern('^[0-1]+$')]],
   inputFrequency: ['', Validators.required],
+  signalFrequency: ['', Validators.required]
 };
 
 @Component({
