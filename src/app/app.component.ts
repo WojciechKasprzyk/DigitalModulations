@@ -25,14 +25,14 @@ export class AppComponent implements OnInit {
   // endregion
 
   isScrolled = false;
-  generatedInputData=[0, 1, 1, 1, 0, 0, 1];
+  generatedInputData = [0, 1, 1, 1, 0, 0, 1];
   inputVectorArray;
   isScrolledF = false;
   firstOn = true;
   menuForm;
-  valid=true;
+  valid = true;
   paramsSet: ParamsSet;
-  constructor(private appService: AppService, private fb: FormBuilder ) {
+  constructor(private appService: AppService, private fb: FormBuilder) {
     // this.menuForm = [this.fb.group(formsFields), this.fb.group(formsFields)];
     this.menuForm = [this.fb.group(formsFields)];
   }
@@ -40,9 +40,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.inputVectorArray = this.menuForm[0].get('inputVector').value.split("");
-    this.paramsSet = new ParamsSet({name: 'BPSK', bits: [0, 1, 1, 1, 0, 0, 1], frequency: 10, periods: 10});
+    this.paramsSet = new ParamsSet({ name: 'BPSK', bits: [0, 1, 1, 1, 0, 0, 1], frequency: 10, periods: 10 });
 
-    for(let i=0; i<this.menuForm.length; i++){
+    for (let i = 0; i < this.menuForm.length; i++) {
       this.menuForm[i].get('inputVector').valueChanges.subscribe(value => {
         this.checkIfValidAndGenerate(this.menuForm[i], 'inputVector');
       });
@@ -50,13 +50,13 @@ export class AppComponent implements OnInit {
         this.checkIfValidAndGenerate(this.menuForm[i], 'inputVector');
       });
       this.menuForm[i].get('inputData').valueChanges.subscribe(value => {
-        if(this.menuForm[i].get('inputData').value != '') this.checkIfValidAndGenerate(this.menuForm[i], 'inputData'); //dziwne
-        else this.valid=false;
+        if (this.menuForm[i].get('inputData').value != '') this.checkIfValidAndGenerate(this.menuForm[i], 'inputData'); //dziwne
+        else this.valid = false;
       });
     }
 
-  
-  
+
+
     // this.menuForm[0].get('inputFrequency').valueChanges.subscribe(value => {
     //   this.paramsSet = new ParamsSet({ name: 'BPSK', bits: this.generatedInputData, frequency: this.menuForm[0].get('inputFrequency').value, periods: 10 });
     // })
@@ -74,11 +74,11 @@ export class AppComponent implements OnInit {
   }
 
   private conductNewInputValues(form: FormGroup, inputName: string) {
-    if(inputName === 'inputData')  this.paramsSet = new ParamsSet({ name: 'BPSK', bits: form.get('inputData').value.split(""), frequency: 10, periods: 10 });
-    else{
-    let generatedInputData = this.randomDataGenerator(form, form.get('inputDataLength').value);
-    form.patchValue({ inputData: generatedInputData.toString().replace(/,/g, '') });
-    this.paramsSet = new ParamsSet({ name: 'BPSK', bits: generatedInputData, frequency: 10, periods: 10 });
+    if (inputName === 'inputData') this.paramsSet = new ParamsSet({ name: 'BPSK', bits: form.get('inputData').value.split(""), frequency: 10, periods: 10 });
+    else {
+      let generatedInputData = this.randomDataGenerator(form, form.get('inputDataLength').value);
+      form.patchValue({ inputData: generatedInputData.toString().replace(/,/g, '') });
+      this.paramsSet = new ParamsSet({ name: 'BPSK', bits: generatedInputData, frequency: 10, periods: 10 });
     }
   }
 
@@ -86,34 +86,37 @@ export class AppComponent implements OnInit {
     let inputVectorArray = form.get('inputVector').value.split("");
     let tmpInputVectorArray = inputVectorArray.slice();
     let generatedInputData = [];
-      for (let i = 0; i < number; i++) {
-        tmpInputVectorArray.unshift(tmpInputVectorArray[inputVectorArray.length - 1] ^ tmpInputVectorArray[tmpInputVectorArray.length - 2]);
-        generatedInputData.push(+tmpInputVectorArray[tmpInputVectorArray.length - 1]);
-        tmpInputVectorArray.pop();
-      }
-      return generatedInputData;
+    for (let i = 0; i < number; i++) {
+      tmpInputVectorArray.unshift(tmpInputVectorArray[inputVectorArray.length - 1] ^ tmpInputVectorArray[tmpInputVectorArray.length - 2]);
+      generatedInputData.push(+tmpInputVectorArray[tmpInputVectorArray.length - 1]);
+      tmpInputVectorArray.pop();
+    }
+    return generatedInputData;
   }
   // region New API
-  harmonic() {
-    const harmonic = this.makeFrame('harmonic');
-    for (let i = 0, t = i;
-      i < this.paramsSet.samplingRate * this.paramsSet.bits.length;
-      i++ , t = i / ((this.paramsSet.samplingRate - 1) * this.paramsSet.frequency)) {
-      harmonic.data[0].x[i] = t * this.paramsSet.scale * this.paramsSet.bits.length;
-      harmonic.data[0].y[i] = Math.sin(t * this.paramsSet.frequency * Math.PI);
-    }
+
+  bpsk() {
+    const harmonicFrame = this.getFrame('harmonic');
+    const signalFrame = this.getFrame('signal');
+    const modulationFrame = this.makeFrame('modulation');
+
+    modulationFrame.x = signalFrame.x; // or harmnicFrame.data.x
+    signalFrame.x.forEach((sample, i) => {
+      modulationFrame.y[i] = harmonicFrame.y[i] * signalFrame.y[i];
+    });
+
   }
 
-  signal(bits: bit[]) {
-    const signal = this.makeFrame('signal');
-    let index = 0;
-    let t = 0;
-    for (let bit of bits) {
-      for (let i = 0; i < this.paramsSet.samplingRate; i++ , t += 1 / this.paramsSet.samplingRate / 1000 / 1000, index++) {
-        signal.data[0].x[index] = t * this.paramsSet.scale ;
-        if (bit == 0) signal.data[0].y[index] = -1; // == operator because of string type of input data
-        else signal.data[0].y[index] = 1;
-      }
+  qpsk() { // wymaga nowego sygnału
+    const signalFrame = this.getFrame('signal');
+    const modulationFrame = this.makeFrame('modulation');
+
+    modulationFrame.x = signalFrame.x;
+
+    for (let i = 0, t = i;
+      i < this.paramsSet.samplingRate * this.paramsSet.bits.length;
+      i++ , t = i / ((this.paramsSet.samplingRate - 1) * 1000 * 1000)) {
+        modulationFrame.y[i] = Math.sin(t * this.paramsSet.frequency * Math.PI * 1000 * 1000 + Math.PI / 4 + 2 * signalFrame.data * Math.PI / 4);
     }
   }
   // endregion
@@ -135,32 +138,9 @@ export class AppComponent implements OnInit {
   //   }
   // }
 
-  bpsk() {
-    const harmonicFrame = this.getFrame('harmonic');
-    const signalFrame = this.getFrame('signal');
-    const modulationFrame = this.makeFrame('modulation');
 
-    // console.log(harmonicFrame, signalFrame, modulationFrame)
-    // for (let i = 0, t = i;
-    //   i < this.paramsSet.samplingRate / this.paramsSet.scale;
-    //   i++ , t = i / ((this.paramsSet.samplingRate - 1) * this.paramsSet.frequency) * this.paramsSet.periods) {
-    //   modulationFrame.data[0].x[i] = t * this.paramsSet.scale;
-    //   modulationFrame.data[0].y[i] = harmonicFrame.data[0].y[i] * signalFrame.data[0].y[i];
-    // }
-  }
 
-  qpsk() { // nie testowane
-    const signalFrame = this.getFrame('signal');
-    const modulationFrame = this.makeFrame('modulation');
 
-    for (let i = 0, t = i;
-      i < this.paramsSet.samplingRate / this.paramsSet.scale;
-      i++ , t = i / ((this.paramsSet.samplingRate - 1) * this.paramsSet.frequency) * this.paramsSet.periods) {
-      modulationFrame.data[0].x[i] = t * this.paramsSet.scale;
-
-      modulationFrame.data[0].y[i] = Math.sin(t * this.paramsSet.frequency * Math.PI + Math.PI / 4 + 2 * signalFrame.data[0].y[i] * Math.PI / 4);
-    }
-  }
 
   qam() {
     const signalFrame = this.getFrame('signal');
@@ -198,11 +178,20 @@ export class AppComponent implements OnInit {
   focusOutFunction(e) {
     e.target.parentElement.style.borderBottom = '1px solid #d8d4d3';
   }
-
 }
 
-namespace Modulation{
-  export namespace Qam8_16 {
+namespace Modulation {
+  export namespace Qpsk {
+    export type IQValues = 1 | 3;
+    export type bitPerSymbol = 2;
+    const maxAplitude = Math.sqrt(3 * 3 * 2);
+  }
+  export namespace Qam8 {
+    export type IQValues = 1 | 3;
+    export type bitPerSymbol = 3;
+    const maxAplitude = Math.sqrt(3 * 3 * 2);
+  }
+  export namespace Qam16 {
     export type IQValues = 1 | 3;
     export type bitPerSymbol = 4;
     const maxAplitude = Math.sqrt(3 * 3 * 2);

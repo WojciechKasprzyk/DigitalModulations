@@ -40,8 +40,15 @@ interface Params {
 
 export class Frame {
     name: string;
+    x: number[];
+    y: number[];
+}
+
+export class PlotlyFrame {
+    name: string;
     data: Array<{ x?: number[], y: number[] }>;
+    
 }
 
 
-type bit = 1 | 0;
+export type bit = 1 | 0;
