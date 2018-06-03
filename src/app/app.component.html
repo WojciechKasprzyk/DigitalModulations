@@ -52,7 +52,7 @@
 
     <div class="content">
         <!-- <div>{{menuForm[0].value |json}}</div> -->
-        <new-plot *ngIf="valid" #plot [paramsSet]="paramsSet" [signal]="signal" [modulation]="bpsk"></new-plot>
+        <new-plot *ngIf="valid" #plot [paramsSet]="paramsSet" [modulation]="bpsk"></new-plot>
 
         <div class="calculating" *ngIf="!valid">waiting for valid input data...
         <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"

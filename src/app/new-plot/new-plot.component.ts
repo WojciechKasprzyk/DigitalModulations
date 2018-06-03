@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, SimpleChanges, SimpleChange, HostListener } from '@angular/core';
-import { ParamsSet, Frame } from '../interfaces/interfaces';
+import { ParamsSet, Frame, bit } from '../interfaces/interfaces';
 
 @Component({
   selector: 'new-plot',
@@ -10,7 +10,6 @@ import { ParamsSet, Frame } from '../interfaces/interfaces';
 })
 export class newPlotComponent implements OnInit {
   @Input() paramsSet: ParamsSet;
-  @Input() signal: (bits: number[]) => void;
   @Input() modulation: () => void;
 
   @ViewChild('plot') plotObject: ElementRef;
@@ -36,16 +35,16 @@ export class newPlotComponent implements OnInit {
     await this.funtionPlot();
   }
 
-  getFrame(name: string) {
+  getFrame(name: string): Frame {
     let result = this.frames.find((frame: Frame) => frame.name === name);
     if (result !== undefined) return result;
     else throw(`cannot find frame called: ${name}`)
   }
 
-  makeFrame(name: string) {
+  makeFrame(name: string): Frame {
     let index = this.frames.findIndex((frame: Frame) => frame.name === name);
     if (index !== -1) this.frames.splice(index,1);
-    this.frames.push({ name: name, data: [{ x: [], y: [] }] });
+    this.frames.push({ name: name, x: [], y: [] });
     return this.frames[this.frames.length - 1];
   }
 
@@ -57,8 +56,8 @@ export class newPlotComponent implements OnInit {
     args.forEach((arg: string) => {
       const frame = this.frames.find((frame: Frame) => frame.name === arg);
       result.push({
-        x: frame.data[0].x,
-        y: frame.data[0].y,
+        x: frame.x,
+        y: frame.y,
         name: arg,
         line: { simplify: false }
       })
@@ -89,8 +88,21 @@ export class newPlotComponent implements OnInit {
     for (let i = 0, t = i;
       i < this.paramsSet.samplingRate * this.paramsSet.bits.length;
       i++ , t = i / ((this.paramsSet.samplingRate - 1) * 1000 * 1000)) {
-      harmonic.data[0].x[i] = t * this.paramsSet.scale;
-      harmonic.data[0].y[i] = Math.sin(t * this.paramsSet.frequency * Math.PI * 1000 * 1000);
+      harmonic.x[i] = t * this.paramsSet.scale;
+      harmonic.y[i] = Math.sin(t * this.paramsSet.frequency * Math.PI * 1000 * 1000);
+    }
+  }
+
+  signal(bits: bit[]) {
+    const signal = this.makeFrame('signal');
+    let index = 0;
+    let t = 0;
+    for (let bit of bits) {
+      for (let i = 0; i < this.paramsSet.samplingRate; i++ , t += 1 / this.paramsSet.samplingRate / 1000 / 1000, index++) {
+        signal.x[index] = t * this.paramsSet.scale ;
+        if (bit == 0) signal.y[index] = -1; // == operator because of string type of input data
+        else signal.y[index] = 1;
+      }
     }
   }
 
