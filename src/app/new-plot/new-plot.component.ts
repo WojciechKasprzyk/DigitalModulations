@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, SimpleChanges, SimpleChange, HostListener } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, SimpleChanges, SimpleChange, HostListener, ChangeDetectionStrategy } from '@angular/core';
 import { ParamsSet, Frame, bit } from '../interfaces/interfaces';
 
 @Component({
@@ -6,7 +6,9 @@ import { ParamsSet, Frame, bit } from '../interfaces/interfaces';
   template: `
     <div #plot id="plot"></div>
   `,
-  styles: [``]
+  styles: [``],
+  changeDetection: ChangeDetectionStrategy.OnPush
+
 })
 export class newPlotComponent implements OnInit {
   @Input() paramsSet: ParamsSet;
@@ -31,6 +33,7 @@ export class newPlotComponent implements OnInit {
     const name: SimpleChange = changes.paramsSet['bits'];
     this.signal(await this.paramsSet.bits);
     this.harmonic();
+    this.modulation();
 
     await this.funtionPlot();
   }
@@ -86,8 +89,8 @@ export class newPlotComponent implements OnInit {
   harmonic() {
     const harmonic = this.makeFrame('harmonic');
     for (let i = 0, t = i;
-      i < this.paramsSet.samplingRate * this.paramsSet.bits.length;
-      i++ , t = i / ((this.paramsSet.samplingRate - 1) * 1000 * 1000)) {
+      i < this.paramsSet.samplingRate * this.paramsSet.bits.length ;
+      i++ , t = i / ((this.paramsSet.samplingRate - 1) * 1000 * 1000 * this.paramsSet.signalFrequency)) {
       harmonic.x[i] = t * this.paramsSet.scale;
       harmonic.y[i] = Math.sin(t * this.paramsSet.frequency * Math.PI * 1000 * 1000);
     }
@@ -98,7 +101,7 @@ export class newPlotComponent implements OnInit {
     let index = 0;
     let t = 0;
     for (let bit of bits) {
-      for (let i = 0; i < this.paramsSet.samplingRate; i++ , t += 1 / this.paramsSet.samplingRate / 1000 / 1000, index++) {
+      for (let i = 0; i < this.paramsSet.samplingRate; i++ , t += 1 / this.paramsSet.samplingRate / this.paramsSet.signalFrequency / 1000 / 1000, index++) {
         signal.x[index] = t * this.paramsSet.scale ;
         if (bit == 0) signal.y[index] = -1; // == operator because of string type of input data
         else signal.y[index] = 1;

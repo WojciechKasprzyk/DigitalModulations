@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { AppService } from './app.service';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
+import { OnInit, AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { ParamsSet, Frame } from './interfaces/interfaces';
 
 
@@ -9,8 +9,8 @@ const formsFields = {
   inputDataLength: [7, Validators.required],
   inputVector: ['110', [Validators.required, Validators.pattern('^[0-1]+$')]],
   inputData: ['0111001', [Validators.required, Validators.pattern('^[0-1]+$')]],
-  inputFrequency: ['', Validators.required],
-  signalFrequency: ['', Validators.required]
+  inputFrequency: [10, Validators.required],
+  signalFrequency: [1, Validators.required]
 };
 
 @Component({
@@ -18,13 +18,19 @@ const formsFields = {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
+
+  ngAfterViewInit(): void {
+    this.windowHeight = document.body.scrollHeight + 'px'
+    document.getElementById("container").style.height = this.windowHeight;
+  }
 
   [x: string]: any;
   // region Parametry
   bits: number[] = [1, 0, 1, 1, 1, 0, 0, 1, 0, 1];
   // endregion
 
+  windowHeight: string;
   isScrolled = false;
   generatedInputData = [0, 1, 1, 1, 0, 0, 1];
   inputVectorArray;
@@ -41,7 +47,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.inputVectorArray = this.menuForm[0].get('inputVector').value.split("");
-    this.paramsSet = new ParamsSet({ name: 'BPSK', bits: [0, 1, 1, 1, 0, 0, 1], frequency: 10, periods: 10 });
+    this.paramsSet = new ParamsSet({ name: 'BPSK', bits: [0, 1, 1, 1, 0, 0, 1], frequency: 10, signalFrequency: 1 });
 
     for (let i = 0; i < this.menuForm.length; i++) {
       this.menuForm[i].get('inputVector').valueChanges.subscribe(value => {
@@ -54,32 +60,37 @@ export class AppComponent implements OnInit {
         if (this.menuForm[i].get('inputData').value != '') this.checkIfValidAndGenerate(this.menuForm[i], 'inputData'); //dziwne
         else this.valid = false;
       });
-    }
-
-
-
-    // this.menuForm[0].get('inputFrequency').valueChanges.subscribe(value => {
-    //   this.paramsSet = new ParamsSet({ name: 'BPSK', bits: this.generatedInputData, frequency: this.menuForm[0].get('inputFrequency').value, periods: 10 });
-    // })
+      this.menuForm[0].get('inputFrequency').valueChanges.subscribe(value => {
+        this.checkIfValidAndGenerate(this.menuForm[i], 'inputFrequency');
+      });
+      this.menuForm[0].get('signalFrequency').valueChanges.subscribe(value => {
+        this.checkIfValidAndGenerate(this.menuForm[i], 'signalFrequency');
+      });
   }
+  // setTimeout(() => document.getElementById('container')[0].style = window.innerHeight, 0)
+  }
+
+  
 
   private checkIfValidAndGenerate(form: FormGroup, inputName: string) {
     if (form.get(inputName).value != "" && form.get(inputName).errors == null) {
       this.conductNewInputValues(form, inputName);
       this.valid = true;
+      document.getElementById("container").style.height = this.windowHeight;
     }
     else {
-      form.patchValue({ inputData: '' });
+      if(inputName == "inputVector")  form.patchValue({ inputData: '' });
       this.valid = false;
+      document.getElementById("container").style.height = window.innerHeight + 'px';
     }
   }
 
   private conductNewInputValues(form: FormGroup, inputName: string) {
-    if (inputName === 'inputData') this.paramsSet = new ParamsSet({ name: 'BPSK', bits: form.get('inputData').value.split(""), frequency: 10, periods: 10 });
+    if (inputName === 'inputData' || inputName === 'inputFrequency' || inputName === 'signalFrequency') this.paramsSet = new ParamsSet({ name: 'BPSK', bits: form.get('inputData').value.split(""), frequency: form.get('inputFrequency').value,  signalFrequency: form.get('signalFrequency').value});
     else {
       let generatedInputData = this.randomDataGenerator(form, form.get('inputDataLength').value);
       form.patchValue({ inputData: generatedInputData.toString().replace(/,/g, '') });
-      this.paramsSet = new ParamsSet({ name: 'BPSK', bits: generatedInputData, frequency: 10, periods: 10 });
+      this.paramsSet = new ParamsSet({ name: 'BPSK', bits: generatedInputData, frequency: form.get('inputFrequency').value,  signalFrequency: form.get('signalFrequency').value});
     }
   }
 
