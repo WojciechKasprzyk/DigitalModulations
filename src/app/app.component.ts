@@ -47,52 +47,24 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.inputVectorArray = this.menuForm[0].get('inputVector').value.split("");
     this.paramsSet = new ParamsSet({ name: 'BPSK', bits: [0, 1, 1, 1, 0, 0, 1], frequency: 10, signalFrequency: 1 });
-    for (let i = 0; i < this.menuForm.length; i++) {
-      // for(let input in formsFields){
-      //   this.menuForm[i].get(input).valueChanges.subscribe(value => )
-      this.menuForm[i].get('inputVector').valueChanges.subscribe(value => this.checkIfValidAndGenerate(this.menuForm[i], 'inputVector'));
-      this.menuForm[i].get('inputDataLength').valueChanges.subscribe(value => this.checkIfValidAndGenerate(this.menuForm[i], 'inputDataLength'));
-      this.menuForm[i].get('inputData').valueChanges.subscribe(value => this.checkIfInputDataIsEmpty(this.menuForm[i], 'inputData'));
-      this.menuForm[i].get('carryFrequency').valueChanges.subscribe(value => this.checkIfInputDataIsEmpty(this.menuForm[i], 'carryFrequency'));
-      this.menuForm[i].get('signalFrequency').valueChanges.subscribe(value => this.checkIfInputDataIsEmpty(this.menuForm[i], 'signalFrequency'));
-    //}
-  }
+    for (let i = 0; i < this.menuForm.length; i++)
+      for (let input in formsFields) 
+        this.menuForm[i].get(input).valueChanges.subscribe(value => this.conductNewInputValues(this.menuForm[i], input))
   }
 
-  private checkIfInputDataIsEmpty(form, inputName: string) {
-    if (form.get('inputData').value != "") this.checkIfValidAndGenerate(form, inputName);
-    else this.valid = false;
-  }
-
-  private checkIfValidAndGenerate(form: FormGroup, inputName: string) {
-    if (this.checkValid(form)) {
-      this.conductNewInputValues(form, inputName);
+  private conductNewInputValues(form: FormGroup, inputName: string) {
+    if (inputName == "inputVector" || inputName == 'inputDataLength') form.patchValue({ inputData: this.randomDataGenerator(form, form.get('inputDataLength').value).toString().replace(/,/g, '') });
+    if (this.checkValid(form) && form.get('inputData').value != "") {
       this.valid = true;
+      this.paramsSet = new ParamsSet({ name: 'BPSK', bits: form.get('inputData').value.split(""), frequency: form.get('carryFrequency').value, signalFrequency: form.get('signalFrequency').value });
     }
     else {
-      if (inputName == "inputVector" || inputName == 'inputDataLength') this.generateAndWriteToInputData(form);
       this.valid = false;
       document.getElementById("container").style.height = window.innerHeight + 'px';
     }
   }
 
-  private checkValid(form) {
-    for (let input in formsFields) if (form.get(input).errors != null) return false;
-    return true;
-  }
-
-  private conductNewInputValues(form: FormGroup, inputName: string) {
-    if (inputName === 'inputData' || inputName === 'carryFrequency' || inputName === 'signalFrequency') this.paramsSet = new ParamsSet({ name: 'BPSK', bits: form.get('inputData').value.split(""), frequency: form.get('carryFrequency').value, signalFrequency: form.get('signalFrequency').value });
-    else this.generateAndWriteToInputData(form);
-  }
-
-  private generateAndWriteToInputData(form: FormGroup) {
-    let generatedInputData = this.randomDataGenerator(form, form.get('inputDataLength').value);
-    form.patchValue({ inputData: generatedInputData.toString().replace(/,/g, '') });
-    this.paramsSet = new ParamsSet({ name: 'BPSK', bits: generatedInputData, frequency: form.get('carryFrequency').value, signalFrequency: form.get('signalFrequency').value });
-  }
-
-  randomDataGenerator(form: FormGroup, n: number) {
+  private randomDataGenerator(form: FormGroup, n: number) {
     let inputVectorArray = form.get('inputVector').value.split("");
     let tmpInputVectorArray = inputVectorArray.slice();
     let generatedInputData = [];
@@ -103,6 +75,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
     return generatedInputData;
   }
+
+  private checkValid(form) {
+    for (let input in formsFields) if (form.get(input).errors != null) return false;
+    return true;
+  }
+
   // region New API
 
   bpsk() {
@@ -146,9 +124,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   //     frame.data[0].y[i] = bits[index];
   //   }
   // }
-
-
-
 
 
   qam() {
