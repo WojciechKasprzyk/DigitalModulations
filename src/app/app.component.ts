@@ -94,11 +94,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  randomDataGenerator(form: FormGroup, number: number) {
+  randomDataGenerator(form: FormGroup, n: number) {
     let inputVectorArray = form.get('inputVector').value.split("");
     let tmpInputVectorArray = inputVectorArray.slice();
     let generatedInputData = [];
-    for (let i = 0; i < number; i++) {
+    for (let i = 0; i < n; i++) {
       tmpInputVectorArray.unshift(tmpInputVectorArray[inputVectorArray.length - 1] ^ tmpInputVectorArray[tmpInputVectorArray.length - 2]);
       generatedInputData.push(+tmpInputVectorArray[tmpInputVectorArray.length - 1]);
       tmpInputVectorArray.pop();
@@ -116,7 +116,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     signalFrame.x.forEach((sample, i) => {
       modulationFrame.y[i] = harmonicFrame.y[i] * signalFrame.y[i];
     });
-
   }
 
   qpsk() { // wymaga nowego sygnału

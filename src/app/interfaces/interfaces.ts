@@ -45,10 +45,9 @@ export class Frame {
     y: number[];
 }
 
-export class PlotlyFrame {
+export class Plot /* PlotlyFrame */ {
     name: string;
     data: Array<{ x?: number[], y: number[] }>;
-    
 }
 
 
