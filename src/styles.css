@@ -4,4 +4,5 @@ body {
     background: #f3f3f3;
     font-family: 'Raleway', sans-serif;
     color: #f77750;
+    overflow-x:hidden;
 }

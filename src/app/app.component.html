@@ -16,13 +16,15 @@
                     <div class="set-name">signal freq:</div>
                    <div class='input-container input-effect small'>
                         <input formControlName="signalFrequency" placeholder="1" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)"/>
-                      </div>
+                        <div class='validator' [hidden]="!form.get('signalFrequency')?.errors?.pattern">use numbers</div>
+                    </div>
                       <div class="scale"> MHz </div>
 
                     <div class="set-name">carry freq</div>
                     <div class='input-container input-effect small'>
-                        <input formControlName="inputFrequency" placeholder="20" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)"/>
-                      </div>
+                        <input formControlName="carryFrequency" placeholder="20" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)"/>
+                        <div class='validator' [hidden]="!form.get('carryFrequency')?.errors?.pattern">use numbers</div>
+                    </div>
                     <div class="scale"> MHz </div>
 
                     <div class="set-name">vector:</div>
@@ -55,7 +57,7 @@
         <new-plot *ngIf="valid" #plot [paramsSet]="paramsSet"></new-plot>
 
         <div class="calculating" *ngIf="!valid">waiting for valid input data...
-        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+        <svg class="svg-big"version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
         width="140.5px" height="34.5px" viewBox="0 0 140.5 34.5" enable-background="new 0 0 140.5 34.5" xml:space="preserve">
    <path fill="#7D5855" stroke="#7D5855" stroke-miterlimit="10" d="M-147.667-140.333"/>
    <polyline  class="path" fill="none" stroke="#AEADAD" stroke-miterlimit="10" points="5,29.5 30,29.5 30,4.554 55,4.554 55,29.5 80,29.5 80,4.554 

@@ -1,16 +1,16 @@
 import { Component, HostListener } from '@angular/core';
 import { AppService } from './app.service';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { OnInit, AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
+import { OnInit, AfterViewInit, AfterViewChecked } from '@angular/core/src/metadata/lifecycle_hooks';
 import { ParamsSet, Frame } from './interfaces/interfaces';
 
 
 const formsFields = {
   inputDataLength: [7, Validators.required],
-  inputVector: ['110', [Validators.required, Validators.pattern('^[0-1]+$')]],
-  inputData: ['0111001', [Validators.required, Validators.pattern('^[0-1]+$')]],
-  inputFrequency: [10, Validators.required],
-  signalFrequency: [1, Validators.required]
+  inputVector: ['110', [Validators.pattern('^[0-1]+$')]],
+  inputData: ['0111001', [Validators.pattern('^[0-1]+$')]],
+  carryFrequency: ['10', [Validators.required, Validators.pattern('[+-]?([0-9]*[.])?[0-9]+')]],
+  signalFrequency: ['1', [Validators.required, Validators.pattern('[+-]?([0-9]*[.])?[0-9]+')]]
 };
 
 @Component({
@@ -20,9 +20,9 @@ const formsFields = {
 })
 export class AppComponent implements OnInit, AfterViewInit {
 
-  ngAfterViewInit(): void {
-    this.windowHeight = document.body.scrollHeight + 'px'
-    document.getElementById("container").style.height = this.windowHeight;
+  async ngAfterViewInit() {
+    // this.windowHeight = await document.body.scrollHeight + 'px'
+    // document.getElementById("container").style.height = await this.windowHeight;
   }
 
   [x: string]: any;
@@ -44,54 +44,52 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.menuForm = [this.fb.group(formsFields)];
   }
 
-
   ngOnInit(): void {
     this.inputVectorArray = this.menuForm[0].get('inputVector').value.split("");
     this.paramsSet = new ParamsSet({ name: 'BPSK', bits: [0, 1, 1, 1, 0, 0, 1], frequency: 10, signalFrequency: 1 });
-
     for (let i = 0; i < this.menuForm.length; i++) {
-      this.menuForm[i].get('inputVector').valueChanges.subscribe(value => {
-        this.checkIfValidAndGenerate(this.menuForm[i], 'inputVector');
-      });
-      this.menuForm[i].get('inputDataLength').valueChanges.subscribe(value => {
-        this.checkIfValidAndGenerate(this.menuForm[i], 'inputVector');
-      });
-      this.menuForm[i].get('inputData').valueChanges.subscribe(value => {
-        if (this.menuForm[i].get('inputData').value != '') this.checkIfValidAndGenerate(this.menuForm[i], 'inputData'); //dziwne
-        else this.valid = false;
-      });
-      this.menuForm[0].get('inputFrequency').valueChanges.subscribe(value => {
-        this.checkIfValidAndGenerate(this.menuForm[i], 'inputFrequency');
-      });
-      this.menuForm[0].get('signalFrequency').valueChanges.subscribe(value => {
-        this.checkIfValidAndGenerate(this.menuForm[i], 'signalFrequency');
-      });
+      // for(let input in formsFields){
+      //   this.menuForm[i].get(input).valueChanges.subscribe(value => )
+      this.menuForm[i].get('inputVector').valueChanges.subscribe(value => this.checkIfValidAndGenerate(this.menuForm[i], 'inputVector'));
+      this.menuForm[i].get('inputDataLength').valueChanges.subscribe(value => this.checkIfValidAndGenerate(this.menuForm[i], 'inputDataLength'));
+      this.menuForm[i].get('inputData').valueChanges.subscribe(value => this.checkIfInputDataIsEmpty(this.menuForm[i], 'inputData'));
+      this.menuForm[i].get('carryFrequency').valueChanges.subscribe(value => this.checkIfInputDataIsEmpty(this.menuForm[i], 'carryFrequency'));
+      this.menuForm[i].get('signalFrequency').valueChanges.subscribe(value => this.checkIfInputDataIsEmpty(this.menuForm[i], 'signalFrequency'));
+    //}
   }
-  // setTimeout(() => document.getElementById('container')[0].style = window.innerHeight, 0)
   }
 
-  
+  private checkIfInputDataIsEmpty(form, inputName: string) {
+    if (form.get('inputData').value != "") this.checkIfValidAndGenerate(form, inputName);
+    else this.valid = false;
+  }
 
   private checkIfValidAndGenerate(form: FormGroup, inputName: string) {
-    if (form.get(inputName).value != "" && form.get(inputName).errors == null) {
+    if (this.checkValid(form)) {
       this.conductNewInputValues(form, inputName);
       this.valid = true;
-      document.getElementById("container").style.height = this.windowHeight;
     }
     else {
-      if(inputName == "inputVector")  form.patchValue({ inputData: '' });
+      if (inputName == "inputVector" || inputName == 'inputDataLength') this.generateAndWriteToInputData(form);
       this.valid = false;
       document.getElementById("container").style.height = window.innerHeight + 'px';
     }
   }
 
+  private checkValid(form) {
+    for (let input in formsFields) if (form.get(input).errors != null) return false;
+    return true;
+  }
+
   private conductNewInputValues(form: FormGroup, inputName: string) {
-    if (inputName === 'inputData' || inputName === 'inputFrequency' || inputName === 'signalFrequency') this.paramsSet = new ParamsSet({ name: 'BPSK', bits: form.get('inputData').value.split(""), frequency: form.get('inputFrequency').value,  signalFrequency: form.get('signalFrequency').value});
-    else {
-      let generatedInputData = this.randomDataGenerator(form, form.get('inputDataLength').value);
-      form.patchValue({ inputData: generatedInputData.toString().replace(/,/g, '') });
-      this.paramsSet = new ParamsSet({ name: 'BPSK', bits: generatedInputData, frequency: form.get('inputFrequency').value,  signalFrequency: form.get('signalFrequency').value});
-    }
+    if (inputName === 'inputData' || inputName === 'carryFrequency' || inputName === 'signalFrequency') this.paramsSet = new ParamsSet({ name: 'BPSK', bits: form.get('inputData').value.split(""), frequency: form.get('carryFrequency').value, signalFrequency: form.get('signalFrequency').value });
+    else this.generateAndWriteToInputData(form);
+  }
+
+  private generateAndWriteToInputData(form: FormGroup) {
+    let generatedInputData = this.randomDataGenerator(form, form.get('inputDataLength').value);
+    form.patchValue({ inputData: generatedInputData.toString().replace(/,/g, '') });
+    this.paramsSet = new ParamsSet({ name: 'BPSK', bits: generatedInputData, frequency: form.get('carryFrequency').value, signalFrequency: form.get('signalFrequency').value });
   }
 
   randomDataGenerator(form: FormGroup, n: number) {
@@ -127,7 +125,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     for (let i = 0, t = i;
       i < this.paramsSet.samplingRate * this.paramsSet.bits.length;
       i++ , t = i / ((this.paramsSet.samplingRate - 1) * 1000 * 1000)) {
-        modulationFrame.y[i] = Math.sin(t * this.paramsSet.frequency * Math.PI * 1000 * 1000 + Math.PI / 4 + 2 * signalFrame.data * Math.PI / 4);
+      modulationFrame.y[i] = Math.sin(t * this.paramsSet.frequency * Math.PI * 1000 * 1000 + Math.PI / 4 + 2 * signalFrame.data * Math.PI / 4);
     }
   }
   // endregion

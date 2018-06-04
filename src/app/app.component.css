@@ -239,6 +239,7 @@ input:focus {
 
 .validator{
   position: absolute;
+  width: 100px;
 }
 
 ::-webkit-input-placeholder{
@@ -247,8 +248,9 @@ input:focus {
 
 .calculating {
   position: absolute;
+  font-size: 20px;
   top: calc(50% + 125px);
-  left: calc(50% - 85px);
+  left: calc(50% - 120px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -263,8 +265,31 @@ input:focus {
   }
 }
 
+@media (max-width: 1350px){
+  #menu {
+    padding: 10px 0px;
+  }
+  #menu .menu-wrapper .option-set {
+    justify-content: flex-start;
+  }
+}
+@media (max-width: 750px){
+  .header {
+    font-size: 26px;
+    height: 100px;
+  }
+  .calculating {
+    font-size: 16px;
+    top: calc(50% + 100px);
+    left: calc(50% - 100px);
+  }
+}
 svg{
   width: 75px;
+}
+
+.svg-big{
+  width: 100px;
 }
 
 .path {

@@ -16,6 +16,7 @@ export class newPlotComponent implements OnInit {
 
   frames: Plot[] = [];
   plots: Plot[] = [];
+  windowHeight;
   constructor() { }
 
   ngOnInit() {
@@ -26,14 +27,16 @@ export class newPlotComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     const name: SimpleChange = changes.paramsSet['bits'];
-    this.resetPlotData()
+    this.resetPlotData();
   }
 
   private async resetPlotData() {
-    this.signal(this.paramsSet.bits);
+    this.signal(await this.paramsSet.bits);
     this.harmonic();
     this.bpsk();
     await this.funtionPlot();
+    this.windowHeight =  await document.body.scrollHeight + 'px'
+    document.getElementById("container").style.height =  this.windowHeight;
   }
 
   getFrame(name: string): Plot {
