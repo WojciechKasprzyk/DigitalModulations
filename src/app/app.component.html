@@ -1,70 +1,115 @@
 <div class="container" id="container">
-<div class="header">digital modulations demo</div>
-<div id="wrap" [ngClass]="{'wrap': true}">
-    <div id="menu">
-        <div class="menu-wrapper">
-            <div *ngFor="let form of menuForm, let i=index">
-            <form [formGroup]="form">
-                <div class="option-set"> 
-                        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                        width="140.5px" height="34.5px" viewBox="0 0 140.5 34.5" enable-background="new 0 0 140.5 34.5" xml:space="preserve">
-                   <path fill="#7D5855" stroke="#7D5855" stroke-miterlimit="10" d="M-147.667-140.333"/>
-                   <polyline  class="path" fill="none" stroke="#AEADAD" stroke-miterlimit="10" points="5,29.5 30,29.5 30,4.554 55,4.554 55,29.5 80,29.5 80,4.554 
-                       105,4.554 105,29.5 130,29.5 "/>
-                   </svg>
-                    <span>signal {{i+1}}</span>
-                    <div class="set-name">signal freq:</div>
-                   <div class='input-container input-effect small'>
-                        <input formControlName="signalFrequency" placeholder="1" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)"/>
-                        <div class='validator' [hidden]="!form.get('signalFrequency')?.errors?.pattern">use numbers</div>
-                    </div>
-                      <div class="scale"> MHz </div>
+    <div class="header">digital modulations demo</div>
+    <div id="wrap" [ngClass]="{'wrap': true}">
+        <div id="menu">
+            <div class="menu-wrapper">
+                <div *ngFor="let form of menuForm, let i=index">
+                    <form [formGroup]="form">
+                        <div class="option-set">
+                            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                width="140.5px" height="34.5px" viewBox="0 0 140.5 34.5" enable-background="new 0 0 140.5 34.5"
+                                xml:space="preserve">
+                                <path fill="#7D5855" stroke="#7D5855" stroke-miterlimit="10" d="M-147.667-140.333" />
+                                <polyline class="path" fill="none" stroke="#AEADAD" stroke-miterlimit="10" points="5,29.5 30,29.5 30,4.554 55,4.554 55,29.5 80,29.5 80,4.554 
+                       105,4.554 105,29.5 130,29.5 " />
+                            </svg>
+                            <span>signal {{i+1}}</span>
+                            <div class="set-name">signal freq:</div>
+                            <div class='input-container input-effect small'>
+                                <input formControlName="signalFrequency" placeholder="1" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)"
+                                />
+                                <div class='validator' [hidden]="!form.get('signalFrequency')?.errors?.pattern">use numbers</div>
+                            </div>
+                            <div class="scale"> MHz </div>
 
-                    <div class="set-name">carry freq</div>
-                    <div class='input-container input-effect small'>
-                        <input formControlName="carryFrequency" placeholder="20" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)"/>
-                        <div class='validator' [hidden]="!form.get('carryFrequency')?.errors?.pattern">use numbers</div>
-                    </div>
-                    <div class="scale"> MHz </div>
+                            <div class="set-name">carrier freq</div>
+                            <div class='input-container input-effect small'>
+                                <input formControlName="carryFrequency" placeholder="20" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)"
+                                />
+                                <div class='validator' [hidden]="!form.get('carryFrequency')?.errors?.pattern">use numbers</div>
+                            </div>
+                            <div class="scale"> MHz </div>
 
-                    <div class="set-name">vector:</div>
-                    <div class='input-container input-effect'>
-                            <input formControlName="inputVector" placeholder="10101" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)">                    
-                            <div class='validator' [hidden]="!form.get('inputVector')?.errors?.pattern">use 0 or 1</div>
-                    </div>
-                    <div class="set-name">length:</div>
-                    <div class="slider">
-                        <div class="input-data">{{form.value.inputDataLength}}</div>
-                        <div>
-                            <input [ngStyle]="sliderColor(form)" type="range" min="1" max="20" value="5" formControlName="inputDataLength"> 
+                            <div class="set-name">vector:</div>
+                            <div class='input-container input-effect'>
+                                <input formControlName="inputVector" placeholder="10101" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)">
+                                <div class='validator' [hidden]="!form.get('inputVector')?.errors?.pattern">use 0 or 1</div>
+                            </div>
+                            <div class="set-name">length:</div>
+                            <div class="slider">
+                                <div class="input-data">{{form.value.inputDataLength}}</div>
+                                <div>
+                                    <input [ngStyle]="sliderColor(form)" type="range" min="1" max="20" value="5" formControlName="inputDataLength">
+                                </div>
+                            </div>
+                            <div class="set-name">data:</div>
+                            <div class="input-container input-effect">
+                                <input formControlName="inputData" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)">
+                                <div class='validator' [hidden]="!form.get('inputData')?.errors?.pattern">use 0 or 1</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="set-name">data:</div>
-                    <div class="input-container input-effect">
-                            <input formControlName="inputData" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)">                   
-                            <div class='validator' [hidden]="!form.get('inputData')?.errors?.pattern">use 0 or 1</div>
-                    </div>
-                </div>
 
-            </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     <div class="content">
         <!-- <div>{{menuForm[0].value |json}}</div> -->
         <new-plot *ngIf="valid" #plot [paramsSet]="paramsSet"></new-plot>
 
         <div class="calculating" *ngIf="!valid">waiting for valid input data...
-        <svg class="svg-big"version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-        width="140.5px" height="34.5px" viewBox="0 0 140.5 34.5" enable-background="new 0 0 140.5 34.5" xml:space="preserve">
-   <path fill="#7D5855" stroke="#7D5855" stroke-miterlimit="10" d="M-147.667-140.333"/>
-   <polyline  class="path" fill="none" stroke="#AEADAD" stroke-miterlimit="10" points="5,29.5 30,29.5 30,4.554 55,4.554 55,29.5 80,29.5 80,4.554 
-       105,4.554 105,29.5 130,29.5 "/>
-   </svg>
-</div>
-    <br>
-    <!-- {{paramsSet |json}} -->
+            <svg class="svg-big" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px" y="0px" width="140.5px" height="34.5px" viewBox="0 0 140.5 34.5" enable-background="new 0 0 140.5 34.5"
+                xml:space="preserve">
+                <path fill="#7D5855" stroke="#7D5855" stroke-miterlimit="10" d="M-147.667-140.333" />
+                <polyline class="path" fill="none" stroke="#AEADAD" stroke-miterlimit="10" points="5,29.5 30,29.5 30,4.554 55,4.554 55,29.5 80,29.5 80,4.554 
+       105,4.554 105,29.5 130,29.5 " />
+            </svg>
+        </div>
+        <div class="theory">
+            <h1>How to use ?</h1>
+            <p>Playground demonstrates diffrent kinds of modulation. You can specify signal and carry frequency. You are also allowed to pick sequence of bits. Any change in data input is reflected in chart. </p> 
+            <h1>BPSK</h1>
+            <p>BPSK stands for Binary Phase Shift Keying. It's a two phase modulation scheme. Binary message is represented by two phases states in carrier signal - 0&#176; for 1 and 180&#176; for 0. </p>
+            <svg class="konstelacja" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                width="191px" height="184.667px" viewBox="0 0 191 184.667" enable-background="new 0 0 191 184.667" xml:space="preserve">
+            <line fill="none" stroke="#000000" stroke-miterlimit="10" x1="88" y1="8.667" x2="88" y2="184.667"/>
+            <line fill="none" stroke="#000000" stroke-miterlimit="10" x1="4.667" y1="97.667" x2="177.333" y2="97.667"/>
+            <circle fill="#F47751" cx="33.5" cy="97.167" r="6.167"/>
+            <circle fill="#F47751" cx="150.667" cy="97.333" r="6.167"/>
+            <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M80.333,18"/>
+            <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M88,8.667"/>
+            <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M98.333,18"/>
+            <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M80.333,18"/>
+            <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M70.5,47.5"/>
+            <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M98.333,18"/>
+            <rect x="23.333" y="108.5" fill="none" width="33" height="23"/>
+            <text transform="matrix(1 0 0 1 23.3333 117.3828)" font-family="'MyanmarText'" font-size="12">-1</text>
+            <rect x="147" y="108.5" fill="none" width="33" height="23"/>
+            <text transform="matrix(1 0 0 1 147 117.3828)" font-family="'MyanmarText'" font-size="12">1</text>
+            <rect x="29.333" y="78" fill="none" width="49" height="44"/>
+            <text transform="matrix(1 0 0 1 29.3333 86.8828)" fill="#F47751" font-family="'MyanmarText'" font-size="12">0</text>
+            <rect x="147" y="78" fill="none" width="33" height="23"/>
+            <text transform="matrix(1 0 0 1 147 86.8828)" fill="#F47751" font-family="'MyanmarText'" font-size="12">1</text>
+            <line fill="none" stroke="#000000" stroke-miterlimit="10" x1="501.5" y1="54.5" x2="501.5" y2="60"/>
+            <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M132,122"/>
+            <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M114,4.5"/>
+            <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M84.333,12"/>
+            <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M88,8.667"/>
+            <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M91.25,11.917"/>
+            <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M88,8.667"/>
+            <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M84.333,11.917"/>
+            <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M91.25,11.917"/>
+            <polygon stroke="#000000" stroke-miterlimit="10" points="84.946,9.135 88,3.845 91.054,9.135 "/>
+            <polygon stroke="#000000" stroke-miterlimit="10" points="177.477,100.296 177.345,94.235 182.74,97.196 "/>
+            <rect x="96" y="4.5" fill="none" width="72" height="100"/>
+            <text transform="matrix(1 0 0 1 96 13.3828)" font-family="'MyanmarText'" font-size="12">Q</text>
+            <polygon fill="none" points="201.424,124.959 186.5,124.5 172.5,104.5 197.5,104.5 "/>
+            <text transform="matrix(1 0 0 1 178.7148 113.3828)" font-family="'MyanmarText'" font-size="12">I</text>
+            </svg>
+
+        </div>
     </div>
 </div>

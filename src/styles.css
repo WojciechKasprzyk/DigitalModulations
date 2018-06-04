@@ -6,3 +6,8 @@ body {
     color: #f77750;
     overflow-x:hidden;
 }
+
+h1{
+    font-size: 36px;
+    letter-spacing: 4px;
+}
