@@ -19,7 +19,7 @@ export class PlotComponent implements OnInit {
   @Input() _addBit: (bits) => void;
   @Input() modulation: () => void;
   @ViewChild('plot') plotObject: ElementRef;
-  bits: number[] = [1, 0, 1, 1, 1, 0, 0, 1, 0, 1];  // @Input() lub service 
+  bits: number[] = [1, 0, 1, 1, 1, 0, 0, 1, 0, 1];  // @Input() lub service
   bitsQPSK = [2, 1, 2, 0/* powinno być 1*/, 1];
   frames: Frame[] = [
     { name: 'sine', data: [{ x: [], y: [] }, { x: [], y: [] }] },

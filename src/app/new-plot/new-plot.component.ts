@@ -14,7 +14,7 @@ export class newPlotComponent implements OnInit {
   @Input() paramsSet: ParamsSet;
   @ViewChild('plot') plotObject: ElementRef;
 
-  frames: Frame[] = [];
+  frames: Plot[] = [];
   plots: Plot[] = [];
   constructor() { }
 
@@ -36,16 +36,16 @@ export class newPlotComponent implements OnInit {
     await this.funtionPlot();
   }
 
-  getFrame(name: string): Frame {
-    let result = this.frames.find((frame: Frame) => frame.name === name);
+  getFrame(name: string): Plot {
+    let result = this.frames.find((frame: Plot) => frame.name === name);
     if (result !== undefined) return result;
     else throw (`cannot find frame called: ${name}`);
   }
 
-  makeFrame(name: string): Frame {
-    let index = this.frames.findIndex((frame: Frame) => frame.name === name);
+  makeFrame(name: string): Plot {
+    let index = this.frames.findIndex((frame: Plot) => frame.name === name);
     if (index !== -1) this.frames.splice(index, 1);
-    this.frames.push({ name: name, x: [], y: [] });
+    this.frames.push({ name: name, data: [{x: [], y: [] }]});
     return this.frames[this.frames.length - 1];
   }
 
@@ -67,10 +67,10 @@ export class newPlotComponent implements OnInit {
     if (args.length === 0) return [{ x: [], y: [], line: { simplify: false } }];
     let result = [];
     args.forEach((arg: string) => {
-      const frame = this.frames.find((frame: Frame) => frame.name === arg);
+      const frame = this.frames.find((frame: Plot) => frame.name === arg);
       result.push({
-        x: frame.x,
-        y: frame.y,
+        x: frame.data[0].x,
+        y: frame.data[0].y,
         name: arg,
         line: { simplify: false }
       });
@@ -99,6 +99,7 @@ export class newPlotComponent implements OnInit {
     type: 'buttons',
     buttons: [
       { method: 'animate', args: [['bpsk']], label: 'bpsk' },
+      { method: 'animate', args: [['bpsk2']], label: 'bpsk2' },
     ]
   }];
 
@@ -113,8 +114,8 @@ export class newPlotComponent implements OnInit {
     for (let i = 0, t = i;
       i < this.paramsSet.samplingRate * this.paramsSet.bits.length;
       i++ , t = i / ((this.paramsSet.samplingRate - 1) * 1000 * 1000 * this.paramsSet.signalFrequency)) {
-      harmonic.x[i] = t * this.paramsSet.scale;
-      harmonic.y[i] = Math.sin(t * this.paramsSet.frequency * Math.PI * 1000 * 1000);
+      harmonic.data[0].x[i] = t * this.paramsSet.scale;
+      harmonic.data[0].y[i] = Math.sin(t * this.paramsSet.frequency * Math.PI * 1000 * 1000);
     }
   }
 
@@ -124,9 +125,9 @@ export class newPlotComponent implements OnInit {
     let t = 0;
     for (let bit of bits) {
       for (let i = 0; i < this.paramsSet.samplingRate; i++ , t += 1 / this.paramsSet.samplingRate / this.paramsSet.signalFrequency / 1000 / 1000, index++) {
-        signal.x[index] = t * this.paramsSet.scale;
-        if (bit == 0) signal.y[index] = -1; // == operator because of string type of input data
-        else signal.y[index] = 1;
+        signal.data[0].x[index] = t * this.paramsSet.scale;
+        if (bit == 0) signal.data[0].y[index] = -1; // == operator because of string type of input data
+        else signal.data[0].y[index] = 1;
       }
     }
   }
@@ -136,21 +137,31 @@ export class newPlotComponent implements OnInit {
     const signalFrame = this.getFrame('signal');
     const bpskFrame = this.makeFrame('bpsk');
 
-    bpskFrame.x = signalFrame.x; // or harmnicFrame.data.x
-    signalFrame.x.forEach((sample, i) => {
-      bpskFrame.y[i] = harmonicFrame.y[i] * signalFrame.y[i];
+    bpskFrame.data[0].x = signalFrame.data[0].x; // or harmnicFrame.data.x
+    signalFrame.data[0].x.forEach((sample, i) => {
+      bpskFrame.data[0].y[i] = harmonicFrame.data[0].y[i] * signalFrame.data[0].y[i];
     });
 
     let plot = this.makePlots('bpsk');
-    plot.data[0].x = harmonicFrame.x;
-    plot.data[0].y = harmonicFrame.y;
+    plot.data[0].x = harmonicFrame.data[0].x;
+    plot.data[0].y = harmonicFrame.data[0].y;
 
-    plot.data[1].x = signalFrame.x;
-    plot.data[1].y = signalFrame.y;
+    plot.data[1].x = signalFrame.data[0].x;
+    plot.data[1].y = signalFrame.data[0].y;
 
-    plot.data[2].x = bpskFrame.x;
-    plot.data[2].y = bpskFrame.y;
-    console.log(this.plots)
+    plot.data[2].x = bpskFrame.data[0].x;
+    plot.data[2].y = bpskFrame.data[0].y;
+    console.log(this.plots);
+
+    let plot2 = this.makePlots('bpsk2');
+    plot2.data[2].x = harmonicFrame.data[0].x;
+    plot2.data[2].y = harmonicFrame.data[0].y;
+
+    plot2.data[1].x = signalFrame.data[0].x;
+    plot2.data[1].y = signalFrame.data[0].y;
+
+    plot2.data[0].x = bpskFrame.data[0].x;
+    plot2.data[0].y = bpskFrame.data[0].y;
   }
 
   // endregion

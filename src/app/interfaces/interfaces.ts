@@ -24,7 +24,7 @@ export class ParamsSet {
         this.bits = params.bits;
         this.frequency = params.frequency;
         this.signalFrequency = params.signalFrequency;
-        this.samplingRate = params.sampligRate ? params.sampligRate : 1400;
+        this.samplingRate = params.sampligRate ? params.sampligRate : 700;
         this.scale = params.scale ? params.scale : 1;
     }
 }
