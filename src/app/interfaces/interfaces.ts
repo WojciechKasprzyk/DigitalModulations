@@ -53,27 +53,27 @@ export class Plot /* PlotlyFrame */ {
 
 export namespace Modulation {
     export namespace BPSK {
-        export type IQValues = 1;
+        export const IQValues = [1];
         export const bitPerSymbol = 1;
         export const maxAmplitude = Math.sqrt(2);
     }
     export namespace QPSK {
-        export type IQValues = 1 | 3;
+        export const IQValues = [1];
         export const bitPerSymbol = 2;
-        export const maxAmplitude = Math.sqrt(3 * 3 * 2);
+        export const maxAmplitude = Math.sqrt(2);
     }
     export namespace QAM8 {
-        export type IQValues = 1 | 3;
+        export const IQValues = [1, 3];
         export const bitPerSymbol = 3;
         export const maxAmplitude = Math.sqrt(3 * 3 * 2);
     }
     export namespace QAM16 {
-        export type IQValues = 1 | 3;
+        export const IQValues = [1, 3];
         export const bitPerSymbol = 4;
         export const maxAmplitude = Math.sqrt(3 * 3 * 2);
     }
     export namespace QAM64 {
-        export type IQValues = 1 | 3 | 5 | 7;
+        export const IQValues = [1, 3, 5, 7];
         export const bitPerSymbol = 6;
         export const maxAmplitude = Math.sqrt(7 * 7 * 2);
     }

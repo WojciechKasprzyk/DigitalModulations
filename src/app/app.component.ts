@@ -137,17 +137,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getQuarter(q: [bit, bit]) {
-    return q[0] * 2 + q[1];
-  }
 
-  pitagoras(I, Q) {
-    return Math.sqrt(I * I + Q * Q);
-  }
-
-  getAmplitude(I, Q, modulation: string) {
-    return this.pitagoras(I, Q) / Modulation[modulation].maxAplitude;
-  }
 
   sliderColor(form) {
     const filledPercent = form.get('inputDataLength').value / 20 * 100;
