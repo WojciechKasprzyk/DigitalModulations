@@ -240,6 +240,11 @@ input{
 .scale{
   margin: 0px 20px 0px 2px;
 }
+
+.plot-wrap {
+  height: 450px;
+  position: relative;
+}
 /* 
 input:focus {
   border-bottom: 1px solid #f76b40;
@@ -316,24 +321,3 @@ svg{
   }
 }
 
-
-.theory {
-  padding: 20px 180px;
-  background: #fafafa;
-  line-height: 2;
-}
-
-p{
-  color: #242324;
-  margin-bottom: 20px;
-  font-size: 17px;
-}
-
-.konstelacja{
-  width: 200px;
-}
-
-.plot-wrap{
-  height: 450px;
-  position: relative;
-}

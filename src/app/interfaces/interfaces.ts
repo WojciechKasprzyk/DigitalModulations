@@ -1,8 +1,7 @@
 export class ParamsSet {
-    name: string;
+    name: Modulation.ModulationType;
     bits: bit[];
     samplingRate: number;
-    scale: number;
     signalFrequency: number;
     private _frequency;
     set frequency(f: number) {
@@ -21,22 +20,21 @@ export class ParamsSet {
     }
 
     constructor(params: Params) {
+        this.name = params.name;
         this.bits = params.bits;
         this.frequency = params.frequency;
         this.signalFrequency = params.signalFrequency;
         this.samplingRate = params.sampligRate ? params.sampligRate : 500;
-        this.scale = params.scale ? params.scale : 1;
     }
 }
 
 
 interface Params {
-    name: string;
+    name: Modulation.ModulationType;
     bits: bit[];
     frequency: number;
     signalFrequency: number;
     sampligRate?: number;
-    scale?: number;
 }
 
 export class Frame {

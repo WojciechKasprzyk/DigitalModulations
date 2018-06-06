@@ -22,28 +22,31 @@ export class newPlotComponent implements OnInit {
 
   ngOnInit() {
     this.plotObject = this.plotObject.nativeElement;
-    this.resetPlotData();
+    this.resetPlotData(this.paramsSet.name);
   }
 
 
   ngOnChanges(changes: SimpleChanges) {
     const name: SimpleChange = changes.paramsSet['bits'];
-    this.resetPlotData();
+    this.resetPlotData(this.paramsSet.name);
   }
 
-  private async resetPlotData() {
+  private async resetPlotData(modulationType: Modulation.ModulationType) {
     this.signal();
     await this.invokeModulation('BPSK');
     await this.invokeModulation('QPSK');
     await this.invokeModulation('QAM8');
-    await this.funtionPlot();
+    await this.invokeModulation('QAM16');
+    await this.invokeModulation('QAM64');
+    // console.log(this.frames)
+    await this.funtionPlot(modulationType);
     this.windowHeight = await document.body.scrollHeight + 'px'
     document.getElementById("container").style.height = this.windowHeight;
   }
 
   private async invokeModulation(modulationType: Modulation.ModulationType) {
     this.harmonic(modulationType);
-    if (modulationType.slice(0,3) === 'QAM') this.qam(modulationType);
+    if (modulationType !== 'BPSK') this.qam(modulationType);
     else this[modulationType.toLocaleLowerCase()]();
     this.setPlots(modulationType);
   }
@@ -107,34 +110,30 @@ export class newPlotComponent implements OnInit {
     });
     return result;
   }
-  private updateMenu = [{
-    // y: -1.1,
-    // direction: 'right',
-    // // xanchor: 'bottom',
-    type: 'buttons',
-    buttons: [
-      { method: 'animate', args: [['BPSK']], label: 'BPSK' },
-      { method: 'animate', args: [['QPSK']], label: 'QPSK' },
-      { method: 'animate', args: [['QAM8']], label: 'QAM8' },
-    ]
-  }];
 
-  funtionPlot() {
+  funtionPlot(modulationType: Modulation.ModulationType) {
     Plotly.purge(this.plotObject);
-    Plotly.plot(this.plotObject, this.getFrames('harmonicBPSK', 'signal', 'BPSK'), {
+    Plotly.plot(this.plotObject, this.getFrames(`harmonic${modulationType}`, 'signal', modulationType), {
       yaxis: { range: [-2, 2] },
-      title: this.paramsSet.name,
       paper_bgcolor: '#f3f3f3',
       plot_bgcolor: '#f3f3f3',
       xanchor: 'x',
-      updatemenus: this.updateMenu,
+      updatemenus: [{
+        type: 'buttons',
+        active: (() => this.modulations.indexOf(modulationType))(),
+        buttons: [
+          { method: 'animate', args: [['BPSK']], label: 'BPSK' },
+          { method: 'animate', args: [['QPSK']], label: 'QPSK' },
+          { method: 'animate', args: [['QAM8']], label: 'QAM8' },
+          { method: 'animate', args: [['QAM16']], label: 'QAM16' },
+          { method: 'animate', args: [['QAM64']], label: 'QAM64' },
+        ]
+      }],
     }, { displayModeBar: true })
       .then(() => {
         Plotly.addFrames(this.plotObject, this.plots);
       });
   }
-
-
 
   @HostListener('window:resize', ['$event'])
   resize(): void {
@@ -148,7 +147,7 @@ export class newPlotComponent implements OnInit {
     for (let i = 0, t = i;
       i < this.paramsSet.samplingRate * Math.ceil(this.paramsSet.bits.length / Modulation[modulationType].bitPerSymbol); // [WARNING] może się wywalić przy nieparzystych
       i++ , t = i / ((this.paramsSet.samplingRate - 1) * 1000 * 1000 * this.paramsSet.signalFrequency)) {
-      harmonic.x[i] = t * this.paramsSet.scale;
+      harmonic.x[i] = t;
       harmonic.y[i] = Math.sin(t * this.paramsSet.frequency * Math.PI * 1000 * 1000);
     }
   }
@@ -177,28 +176,6 @@ export class newPlotComponent implements OnInit {
     });
   }
 
-  qpsk() { // wymaga nowego sygnału
-    const harmonicFrame = this.getFrame('harmonicQPSK');
-    const signalFrame = this.getFrame('signal');
-    const modulationFrame = this.makeFrame('QPSK');
-
-    modulationFrame.x = harmonicFrame.x;
-    let i = 0; // index
-    let bitBufor = [];
-    let symbolValue;
-    const bits = !(this.paramsSet.bits.length % 2) ? this.paramsSet.bits : [...this.paramsSet.bits, 0];
-    for (let bit of bits) {
-      bitBufor.push(bit); // pushnij bita do bufora
-      if (bitBufor.length === Modulation.QPSK.bitPerSymbol) {
-        symbolValue = this.bton(<[bit, bit]>bitBufor);
-        for (let _i = 0; _i < this.paramsSet.samplingRate; _i++ , i++) {
-          modulationFrame.y[i] = Math.sin(harmonicFrame.x[i] * this.paramsSet.frequency * Math.PI * 1000 * 1000 + Math.PI / 4 + 2 * symbolValue * Math.PI / 4);
-        }
-        bitBufor = [];
-      }
-    }
-  }
-
   qam(modulationType: Modulation.ModulationType) {
     const harmonicFrame = this.getFrame(`harmonic${modulationType}`);
     const signalFrame = this.getFrame('signal');
@@ -209,7 +186,7 @@ export class newPlotComponent implements OnInit {
     let i = 0; // index
     let bitBufor = [];
     let quarter;
-    let I, Q;
+    let I, Q, A;
     let bits = this.paramsSet.bits;
     const remainder = bits.length % Modulation[modulationType].bitPerSymbol;
     if (remainder !== 0) bits = [...bits, ...<bit[]>(new Array(Modulation[modulationType].bitPerSymbol - remainder + 1).join('0').split('').map(parseFloat))]; // xDDD a tak serio to mamy pustą array ktorą scalamy zerami potem splitujemy potem mapujemy na number[] i rzutujemy na bit[]
@@ -218,22 +195,24 @@ export class newPlotComponent implements OnInit {
       if (bitBufor.length === Modulation[modulationType].bitPerSymbol) {
         quarter = this.bton([bitBufor[0],bitBufor[1]]);
         [I, Q] = this.getIQ(bitBufor.slice(2), modulationType);
+        A = this.getAmplitude(I,Q, modulationType);
+        // console.log(A,Q,Math.asin(Q/this.pitagoras(I,Q)))
         for (let _i = 0; _i < this.paramsSet.samplingRate; _i++ , i++) {
           // /*QPSK*/modulationFrame.y[i] = Math.sin(harmonicFrame.x[i] * this.paramsSet.frequency * Math.PI * 1000 * 1000 + Math.PI / 4 + 2 * quarter * Math.PI / 4);
-          modulationFrame.y[i] = this.getAmplitude(I,Q, modulationType) * Math.sin(harmonicFrame.x[i] * this.paramsSet.frequency * Math.PI * 1000 * 1000 + quarter * Math.PI / 4 + Math.asin(Q/this.getAmplitude(I, Q, modulationType)));
+          modulationFrame.y[i] = A * Math.sin(harmonicFrame.x[i] * this.paramsSet.frequency * Math.PI * 1000 * 1000 + quarter * Math.PI / 4 + Math.asin(Q/this.pitagoras(I, Q)));
         }
-        console.log(bitBufor)
+        // console.log(bitBufor)
         bitBufor = [];
       }
     }
   }
 
-  //[TODO] no jest tak że nie powinniśmy bitów liczyć tylko wartości IQ tam wstawiać
+  // TODO no jest tak że nie powinniśmy bitów liczyć tylko wartości IQ tam wstawiać
 
   getIQ(bits: bit[], modulationType: Modulation.ModulationType ) {
     let I = Modulation[modulationType].IQValues[this.bton(bits.slice(0, bits.length / 2))];
     let Q = Modulation[modulationType].IQValues[this.bton(bits.slice(bits.length / 2))];
-    console.log('getIQ', I, Q)
+    // console.log('getIQ', I, Q)
     return [I, Q];
   }
 

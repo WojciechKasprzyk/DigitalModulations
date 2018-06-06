@@ -6,14 +6,15 @@ import { AppComponent } from './app.component';
 import { AppService } from './app.service';
 import { PlotComponent } from './plot/plot.component';
 import { newPlotComponent } from './new-plot/new-plot.component';
-
-
+import { TheoryComponent } from './theory/theory.component';
+ 
 
 @NgModule({
   declarations: [
     AppComponent,
     PlotComponent,
     newPlotComponent,
+    TheoryComponent
   ],
   imports: [
     BrowserModule,
