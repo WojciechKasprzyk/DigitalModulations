@@ -1,0 +1,29 @@
+.theory {
+  padding: 20px 400px;
+  background: #fafafa;
+  line-height: 2;
+}
+
+h1{
+  font-size: 36px;
+  letter-spacing: 2.5px;
+} 
+
+p{
+  color: #242324;
+  margin-bottom: 20px;
+  font-size: 17px;
+}
+
+.konstelacja{
+  width: 200px;
+}
+
+a, a:visited{
+  color: #f77750;
+  text-decoration: none;
+}
+h1{
+    font-size: 36px;
+    letter-spacing: 4px;
+}

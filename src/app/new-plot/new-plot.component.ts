@@ -38,7 +38,7 @@ export class newPlotComponent implements OnInit {
     await this.invokeModulation('QAM8');
     await this.invokeModulation('QAM16');
     await this.invokeModulation('QAM64');
-    console.log(this.frames)
+    // console.log(this.frames)
     await this.funtionPlot();
     this.windowHeight = await document.body.scrollHeight + 'px'
     document.getElementById("container").style.height = this.windowHeight;
@@ -146,6 +146,13 @@ export class newPlotComponent implements OnInit {
     Plotly.Plots.resize(document.getElementById('plot'));
   }
 
+  @HostListener('window:click', ['$event'])
+  z(): void {
+    let mod = event.target['innerHTML'] ? event.target['innerHTML'] :  event.target['nextElementSibling'].innerHTML;
+    console.log(mod)
+  }
+
+
   // region bpsk API
   harmonic(modulationType: Modulation.ModulationType) {
     const signal = this.getFrame(`signal`);
@@ -224,12 +231,12 @@ export class newPlotComponent implements OnInit {
         quarter = this.bton([bitBufor[0],bitBufor[1]]);
         [I, Q] = this.getIQ(bitBufor.slice(2), modulationType);
         A = this.getAmplitude(I,Q, modulationType);
-        console.log(A,Q,Math.asin(Q/this.pitagoras(I,Q)))
+        // console.log(A,Q,Math.asin(Q/this.pitagoras(I,Q)))
         for (let _i = 0; _i < this.paramsSet.samplingRate; _i++ , i++) {
           // /*QPSK*/modulationFrame.y[i] = Math.sin(harmonicFrame.x[i] * this.paramsSet.frequency * Math.PI * 1000 * 1000 + Math.PI / 4 + 2 * quarter * Math.PI / 4);
           modulationFrame.y[i] = A * Math.sin(harmonicFrame.x[i] * this.paramsSet.frequency * Math.PI * 1000 * 1000 + quarter * Math.PI / 4 + Math.asin(Q/this.pitagoras(I, Q)));
         }
-        console.log(bitBufor)
+        // console.log(bitBufor)
         bitBufor = [];
       }
     }
@@ -240,7 +247,7 @@ export class newPlotComponent implements OnInit {
   getIQ(bits: bit[], modulationType: Modulation.ModulationType ) {
     let I = Modulation[modulationType].IQValues[this.bton(bits.slice(0, bits.length / 2))];
     let Q = Modulation[modulationType].IQValues[this.bton(bits.slice(bits.length / 2))];
-    console.log('getIQ', I, Q)
+    // console.log('getIQ', I, Q)
     return [I, Q];
   }
 
