@@ -32,7 +32,6 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  margin-left: 20px;
   justify-content: center;
 }
 
@@ -41,7 +40,7 @@
   padding: 10px 0;
   margin-left: 10px;
 }
-.option-set span{
+.signal-menu{
   letter-spacing: 1.5px;
   border-right: 1px solid #f77750;
   padding: 5px;
@@ -147,12 +146,15 @@ select{
 
 .content {
   padding: 20px 5px 0px 5px;
-  /* height: 100%; */
 }
 
+.custom-select{
+  margin: 0px 10px 0px 5px;
+}
 .custom-select-drop{
   cursor: pointer;
   position: relative;
+  width: 80px;
 }
 
 .options-container{
@@ -162,11 +164,17 @@ select{
   background-color: white;
   top: 20px; 
   /* left: 45px;  */
-  width: 54px;
-  padding: 2px;
-  border-radius: 10%;
+  width: 80px;
+  z-index: 999;
 }
 
+.label-radio{
+  padding: 10px;
+}
+
+.label-radio:hover{
+  background-color: #fafafa;
+}
 .options-container [type="radio"] + span:before {
   content:none;
 }
@@ -249,7 +257,7 @@ input:focus {
 .calculating {
   position: absolute;
   font-size: 20px;
-  top: calc(50% + 125px);
+  top: calc(50% - 27px);
   left: calc(50% - 120px);
   display: flex;
   flex-direction: column;
@@ -323,4 +331,9 @@ p{
 
 .konstelacja{
   width: 200px;
+}
+
+.plot-wrap{
+  height: 450px;
+  position: relative;
 }

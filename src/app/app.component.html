@@ -13,7 +13,20 @@
                                 <polyline class="path" fill="none" stroke="#AEADAD" stroke-miterlimit="10" points="5,29.5 30,29.5 30,4.554 55,4.554 55,29.5 80,29.5 80,4.554 
                        105,4.554 105,29.5 130,29.5 " />
                             </svg>
-                            <span>signal {{i+1}}</span>
+                            <span class="signal-menu">signal</span>
+
+                            <div class="set-name">modulation:</div>
+                            <div class="custom-select">
+                                <div class="custom-select-drop">{{form.get('modulation').value}} <span (click)="showe()">{{!showOptions ? '&#9660;' : '&#9650;'}}</span>
+                                    <div class="options-container" *ngIf="showOptions">
+                                            <label class='label-radio' *ngFor="let option of modulationTypes" for="{{option}}" (click)="show($event, option)">
+                                                    <input type="radio" value="{{option}}" id="{{option}}" formControlName="modulation">
+                                                    <span class="option">{{option}}</span>
+                                                </label>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="set-name">signal freq:</div>
                             <div class='input-container input-effect small'>
                                 <input formControlName="signalFrequency" placeholder="1" (focus)="focusFunction($event)" (focusout)="focusOutFunction($event)"
@@ -57,6 +70,7 @@
 
     <div class="content">
         <!-- <div>{{menuForm[0].value |json}}</div> -->
+        <div class="plot-wrap">
         <new-plot *ngIf="valid" #plot [paramsSet]="paramsSet"></new-plot>
 
         <div class="calculating" *ngIf="!valid">waiting for valid input data...
@@ -68,6 +82,7 @@
        105,4.554 105,29.5 130,29.5 " />
             </svg>
         </div>
+    </div>
         <div class="theory">
             <h1>How to use ?</h1>
             <p>Playground demonstrates diffrent kinds of modulation. You can specify signal and carry frequency. You are also allowed to pick sequence of bits. Any change in data input is reflected in chart. </p> 

@@ -6,6 +6,7 @@ import { ParamsSet, Frame } from './interfaces/interfaces';
 
 
 const formsFields = {
+  modulation: ['BPSK', Validators.required],
   inputDataLength: [7, Validators.required],
   inputVector: ['110', [Validators.pattern('^[0-1]+$')]],
   inputData: ['0111001', [Validators.pattern('^[0-1]+$')]],
@@ -13,30 +14,25 @@ const formsFields = {
   signalFrequency: ['1', [Validators.required, Validators.pattern('[+-]?([0-9]*[.])?[0-9]+')]]
 };
 
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit, AfterViewInit {
-
-  async ngAfterViewInit() {
-    // this.windowHeight = await document.body.scrollHeight + 'px'
-    // document.getElementById("container").style.height = await this.windowHeight;
-  }
+export class AppComponent implements OnInit {
 
   [x: string]: any;
   // region Parametry
   bits: number[] = [1, 0, 1, 1, 1, 0, 0, 1, 0, 1];
   // endregion
 
-  windowHeight: string;
-  isScrolled = false;
+  modulationTypes = ['BPSK', 'QPSK', '8QAM', '16QAM', '64QAM'];
   generatedInputData = [0, 1, 1, 1, 0, 0, 1];
   inputVectorArray;
-  isScrolledF = false;
   firstOn = true;
   menuForm;
+  showOptions=false;
   valid = true;
   paramsSet: ParamsSet;
   constructor(private appService: AppService, private fb: FormBuilder) {
@@ -45,12 +41,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.inputVectorArray = this.menuForm[0].get('inputVector').value.split("");
     this.paramsSet = new ParamsSet({ name: 'BPSK', bits: [0, 1, 1, 1, 0, 0, 1], frequency: 10, signalFrequency: 1 });
     for (let i = 0; i < this.menuForm.length; i++)
       for (let input in formsFields) 
         this.menuForm[i].get(input).valueChanges.subscribe(value => this.conductNewInputValues(this.menuForm[i], input))
-  }
+  
+        // this.menuForm[0].get('modulation').valueChanges.subscribe(value => this.show());
+      }
 
   private conductNewInputValues(form: FormGroup, inputName: string) {
     if (inputName == "inputVector" || inputName == 'inputDataLength') form.patchValue({ inputData: this.randomDataGenerator(form, form.get('inputDataLength').value).toString().replace(/,/g, '') });
@@ -60,7 +57,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
     else {
       this.valid = false;
-      document.getElementById("container").style.height = window.innerHeight + 'px';
     }
   }
 
@@ -80,7 +76,16 @@ export class AppComponent implements OnInit, AfterViewInit {
     for (let input in formsFields) if (form.get(input).errors != null) return false;
     return true;
   }
+  
+  showe(){
+    this.showOptions = !this.showOptions;
 
+  }
+  show(e, i){
+    e.stopPropagation();
+    this.showOptions = !this.showOptions;
+    this.menuForm[0].patchValue({ modulation: i});
+  }
   // region New API
 
   bpsk() {
