@@ -1,7 +1,7 @@
 import { Component, HostListener, ElementRef, ChangeDetectionStrategy } from '@angular/core';
 import { AppService } from './app.service';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { OnInit, AfterViewInit, AfterViewChecked } from '@angular/core/src/metadata/lifecycle_hooks';
+import { OnInit, AfterViewInit, AfterViewChecked, OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 import { ParamsSet, Frame, Modulation } from './interfaces/interfaces';
 
 
@@ -19,7 +19,7 @@ const formsFields = {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   // region Parametry
   bits: number[] = [1, 0, 1, 1, 1, 0, 0, 1, 0, 1];
   // endregion
@@ -91,5 +91,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   focusOutFunction(e) {
     e.target.parentElement.style.borderBottom = '1px solid #d8d4d3';
+  }
+
+  ngOnDestroy(): void {
+    document.getElementsByClassName('menulayer')[0].removeEventListener('click', this.getCurrentModulation.bind(this));
   }
 }

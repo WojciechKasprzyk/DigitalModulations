@@ -4,6 +4,19 @@ body {
     background: #f3f3f3;
     font-family: 'Raleway', sans-serif;
     color: #f77750;
-    overflow-x:hidden;
+    overflow-x: hidden;
 }
 
+h1{
+    font-size: 36px;
+    letter-spacing: 2.5px;
+    padding-left: 15px;
+    border-left: 3px solid #f77750;   
+    display: inline;
+}
+
+a, a:visited{
+    color: #f77750;
+    text-decoration: none;
+  }
+  
