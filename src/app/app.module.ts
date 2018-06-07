@@ -7,14 +7,16 @@ import { AppService } from './app.service';
 import { PlotComponent } from './plot/plot.component';
 import { newPlotComponent } from './new-plot/new-plot.component';
 import { TheoryComponent } from './theory/theory.component';
- 
+import { CHeaderComponent } from './ctooltip/ctooltip.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     PlotComponent,
     newPlotComponent,
-    TheoryComponent
+    TheoryComponent,
+    CHeaderComponent
   ],
   imports: [
     BrowserModule,

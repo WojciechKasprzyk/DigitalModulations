@@ -6,9 +6,7 @@ import { ParamsSet, Frame, bit, Plot, Modulation } from '../interfaces/interface
   template: `
     <div #plot id="plot"></div>
   `,
-  styles: [``],
-  changeDetection: ChangeDetectionStrategy.OnPush
-
+  styles: [``]
 })
 export class newPlotComponent implements OnInit {
   @Input() paramsSet: ParamsSet;

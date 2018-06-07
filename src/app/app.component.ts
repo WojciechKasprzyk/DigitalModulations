@@ -20,8 +20,6 @@ const formsFields = {
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit, AfterViewInit {
-
-  [x: string]: any;
   // region Parametry
   bits: number[] = [1, 0, 1, 1, 1, 0, 0, 1, 0, 1];
   // endregion
