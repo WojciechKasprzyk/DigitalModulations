@@ -1,31 +1,50 @@
-<div class="theory">
-    <h1>How to use ?</h1>
-    <p>Playground demonstrates diffrent kinds of modulation. You can specify signal and carry frequency. You are also allowed to pick sequence of bits. Any change in data input is reflected in chart. </p> 
-    
-    <c-header title="BPSK" href="https://en.wikipedia.org/wiki/Phase-shift_keying#Binary_phase-shift_keying_(BPSK)"></c-header>
+<div class="theory-wrapper">
+    <div class="theory" id="theory">
+        <div id="wrapper" *ngIf="visible" [@slide]>
+        <h1>How to use ?</h1>
+        <p>
+            Playground demonstrates diffrent kinds of modulation. You can specify signal and carry frequency. You are also allowed to
+            pick sequence of bits. Any change in data input is reflected in chart.
+        </p>
 
-    <p>BPSK stands for Binary Phase Shift Keying. It's a two phase modulation scheme. Binary message is represented by two phases states in carrier signal - 0&#176; for 1 and 180&#176; for 0. </p>
-    <constellation [modulation]="'BPSK'"></constellation>
+        <c-header title="BPSK" href="https://en.wikipedia.org/wiki/Phase-shift_keying#Binary_phase-shift_keying_(BPSK)"></c-header>
+        <p>
+            BPSK stands for Binary Phase Shift Keying. It's a two phase modulation scheme. Binary message is represented by two phases
+            states in carrier signal - 0&#176; for 1 and 180&#176; for 0.
+        </p>
+        <constellation [modulation]="'BPSK'"></constellation>
 
-    <br>
-    <c-header title="QPSK" href="https://en.wikipedia.org/wiki/Phase-shift_keying#Quadrature_phase-shift_keying_(QPSK)"></c-header>
-    <p>QPSK means Quadrature Phase Shift Keying. It is another variant of phase-shifting keying modulation. 
-        By constructing symbol with two bits, it can use a four different orthogonal values of the phase. 
-        Above digital modulation demo presents phases: &#x03A0;/4, 3&#x03A0;/4, 5&#x03A0;/4, 7&#x03A0;/4.
-    </p>
-    <constellation [modulation]="'QPSK'"></constellation>
+        <c-header title="QPSK" href="https://en.wikipedia.org/wiki/Phase-shift_keying#Quadrature_phase-shift_keying_(QPSK)"></c-header>
+        <p>QPSK means Quadrature Phase Shift Keying. It is another variant of phase-shifting keying modulation. By constructing
+            symbol with two bits, it can use a four different orthogonal values of the phase. Above digital modulation demo
+            presents phases: &#x03A0;/4, 3&#x03A0;/4, 5&#x03A0;/4, 7&#x03A0;/4.
+        </p>
+        <constellation [modulation]="'QPSK'"></constellation>
 
-    <c-header title="QAM" href="https://en.wikipedia.org/wiki/Quadrature_amplitude_modulation"></c-header>
-    
-    <p>
-        lorem 
-    </p>
-    <div class="constellation-wrapper">
-    <constellation [modulation]="'8QAM'"></constellation>
-    <constellation [modulation]="'16QAM'"></constellation>
-    <constellation [modulation]="'64QAM'"></constellation>
+        <c-header title="QAM" href="https://en.wikipedia.org/wiki/Quadrature_amplitude_modulation"></c-header>
+        <p>
+            Quadrature amplitude modulation is both an analog and a digital modulation scheme. It conveys two analog message signals,
+            or two digital bit streams, by modulating the amplitudes of two carrier waves, using the amplitude-shift keying
+            (ASK) digital modulation scheme or amplitude modulation (AM) analog modulation scheme. The two carrier waves
+            of the same frequency, usually sinusoids, are out of phase with each other by 90° and are thus called quadrature
+            carriers or quadrature components — hence the name of the scheme. The modulated waves are summed, and the final
+            waveform is a combination of both phase-shift keying (PSK) and amplitude-shift keying (ASK), or, in the analog
+            case, of phase modulation (PM) and amplitude modulation.
+            <br> QAM could modulates signal by using diffrent numbers of bits, for example 8-QAM uses 3 bits per symbol and 64-QAM
+            uses 6 bits - hence the prefixes, because 2 raised to the power of 3 is 8 and to the power of 6 is 64.
+            <br> In the playground, 8-QAM, 16-QAM and 64-QAM are implemented in their rectangular constellation instance.
+        </p>
+        <div class="constellation-wrapper">
+            <constellation [modulation]="'8QAM'"></constellation>
+            <constellation [modulation]="'16QAM'"></constellation>
+            <constellation [modulation]="'64QAM'"></constellation>
+        </div>
+        <h1>Authors</h1>
+        <p>Above application was created by
+            <a target="_blank" href="https://github.com/annajjj">Anna Jonakowska</a> and
+            <a target="_blank" href="https://github.com/Evexis">Wojciech Kasprzyk</a> by using
+            <a href="https://plot.ly/javascript/">plotly.js</a>
+        </p>
+    </div>
+    </div>
 </div>
-    <h1>Authors</h1>
-    <p>Above application was created by Anna J and Wojciech K by using <a href="https://plot.ly/javascript/">plotly.js</a></p>
-</div>
-

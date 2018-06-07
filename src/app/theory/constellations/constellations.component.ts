@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Modulation } from '../../interfaces/interfaces';
 
 @Component({
@@ -485,8 +485,8 @@ import { Modulation } from '../../interfaces/interfaces';
     }
     `]
 })
+
 export class ConstllationsComponent {
     @Input() modulation: Modulation.ModulationType;
     constructor() { }
-
 }
