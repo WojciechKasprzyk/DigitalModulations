@@ -4,19 +4,19 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { AppService } from './app.service';
-import { PlotComponent } from './plot/plot.component';
 import { newPlotComponent } from './new-plot/new-plot.component';
 import { TheoryComponent } from './theory/theory.component';
 import { CHeaderComponent } from './ctooltip/ctooltip.component';
+import { ConstllationsComponent } from './theory/constellations/constellations.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    PlotComponent,
     newPlotComponent,
     TheoryComponent,
-    CHeaderComponent
+    CHeaderComponent,
+    ConstllationsComponent
   ],
   imports: [
     BrowserModule,

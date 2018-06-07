@@ -5,42 +5,7 @@
     <c-header title="BPSK" href="https://en.wikipedia.org/wiki/Phase-shift_keying#Binary_phase-shift_keying_(BPSK)"></c-header>
 
     <p>BPSK stands for Binary Phase Shift Keying. It's a two phase modulation scheme. Binary message is represented by two phases states in carrier signal - 0&#176; for 1 and 180&#176; for 0. </p>
-    <svg class="konstelacja" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-        width="191px" height="184.667px" viewBox="0 0 191 184.667" enable-background="new 0 0 191 184.667" xml:space="preserve">
-    <line fill="none" stroke="#000000" stroke-miterlimit="10" x1="88" y1="8.667" x2="88" y2="184.667"/>
-    <line fill="none" stroke="#000000" stroke-miterlimit="10" x1="4.667" y1="97.667" x2="177.333" y2="97.667"/>
-    <circle fill="#F47751" cx="33.5" cy="97.167" r="6.167"/>
-    <circle fill="#F47751" cx="150.667" cy="97.333" r="6.167"/>
-    <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M80.333,18"/>
-    <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M88,8.667"/>
-    <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M98.333,18"/>
-    <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M80.333,18"/>
-    <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M70.5,47.5"/>
-    <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M98.333,18"/>
-    <rect x="23.333" y="108.5" fill="none" width="33" height="23"/>
-    <text transform="matrix(1 0 0 1 23.3333 117.3828)" font-family="'MyanmarText'" font-size="12">-1</text>
-    <rect x="147" y="108.5" fill="none" width="33" height="23"/>
-    <text transform="matrix(1 0 0 1 147 117.3828)" font-family="'MyanmarText'" font-size="12">1</text>
-    <rect x="29.333" y="78" fill="none" width="49" height="44"/>
-    <text transform="matrix(1 0 0 1 29.3333 86.8828)" fill="#F47751" font-family="'MyanmarText'" font-size="12">0</text>
-    <rect x="147" y="78" fill="none" width="33" height="23"/>
-    <text transform="matrix(1 0 0 1 147 86.8828)" fill="#F47751" font-family="'MyanmarText'" font-size="12">1</text>
-    <line fill="none" stroke="#000000" stroke-miterlimit="10" x1="501.5" y1="54.5" x2="501.5" y2="60"/>
-    <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M132,122"/>
-    <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M114,4.5"/>
-    <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M84.333,12"/>
-    <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M88,8.667"/>
-    <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M91.25,11.917"/>
-    <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M88,8.667"/>
-    <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M84.333,11.917"/>
-    <path fill="none" stroke="#000000" stroke-miterlimit="10" d="M91.25,11.917"/>
-    <polygon stroke="#000000" stroke-miterlimit="10" points="84.946,9.135 88,3.845 91.054,9.135 "/>
-    <polygon stroke="#000000" stroke-miterlimit="10" points="177.477,100.296 177.345,94.235 182.74,97.196 "/>
-    <rect x="96" y="4.5" fill="none" width="72" height="100"/>
-    <text transform="matrix(1 0 0 1 96 13.3828)" font-family="'MyanmarText'" font-size="12">Q</text>
-    <polygon fill="none" points="201.424,124.959 186.5,124.5 172.5,104.5 197.5,104.5 "/>
-    <text transform="matrix(1 0 0 1 178.7148 113.3828)" font-family="'MyanmarText'" font-size="12">I</text>
-    </svg>
+    <constellation [modulation]="'BPSK'"></constellation>
 
     <br>
     <c-header title="QPSK" href="https://en.wikipedia.org/wiki/Phase-shift_keying#Quadrature_phase-shift_keying_(QPSK)"></c-header>
@@ -48,15 +13,18 @@
         By constructing symbol with two bits, it can use a four different orthogonal values of the phase. 
         Above digital modulation demo presents phases: &#x03A0;/4, 3&#x03A0;/4, 5&#x03A0;/4, 7&#x03A0;/4.
     </p>
-
-    <!-- <h1 data-toggle=[c-tooltip]>hello</h1> -->
+    <constellation [modulation]="'QPSK'"></constellation>
 
     <c-header title="QAM" href="https://en.wikipedia.org/wiki/Quadrature_amplitude_modulation"></c-header>
     
     <p>
         lorem 
     </p>
-    
+    <div class="constellation-wrapper">
+    <constellation [modulation]="'8QAM'"></constellation>
+    <constellation [modulation]="'16QAM'"></constellation>
+    <constellation [modulation]="'64QAM'"></constellation>
+</div>
     <h1>Authors</h1>
     <p>Above application was created by Anna J and Wojciech K by using <a href="https://plot.ly/javascript/">plotly.js</a></p>
 </div>
