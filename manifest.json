@@ -1,0 +1,13 @@
+{
+    "short_name": "DigitalModulations",
+    "name": "Digital Modulations Playground",
+    "start": "/",
+
+    "theme_color": "#f48c5b",
+    "background_color": "#ffffff",
+
+    "display": "standalone",
+    "orientation": "portrait",
+
+    
+}

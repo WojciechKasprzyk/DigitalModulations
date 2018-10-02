@@ -1,5 +1,17 @@
 @import url("reset-css.css");
 
+body::-webkit-scrollbar{
+    width: 4px;
+}
+body::-webkit-scrollbar:hover{
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #f77750;
+    border-radius: 20px;
+}
+
 body {
     background: #f3f3f3;
     font-family: 'Raleway', sans-serif;
